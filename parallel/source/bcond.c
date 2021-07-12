@@ -148,7 +148,7 @@ GetEntryVolume (FILE * fp, int j)
 }
 
 int
-BcdImportBCD (char *file)
+BcdImportBCD (char *file) //边界条件文件导入函数
 {
 
   int i, j, n;
