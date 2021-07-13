@@ -104,7 +104,7 @@ MshFreeMemory ()
 }
 
 void
-MshCorrectNonOrthogonality () //网格非正交修正
+MshCorrectNonOrthogonality ()
 {
 
   int i;
@@ -258,6 +258,7 @@ MshGetShapeFunctions () //网格形状判断
 void
 MshGetElementTypes ()
 {
+
 
   int i;
 

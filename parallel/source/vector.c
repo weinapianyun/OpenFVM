@@ -74,8 +74,9 @@ V_GetCmp (Vec * v, int ind)
 {
 
   double value;
-
-  VecGetValues (*v, 1, &ind, &value);
+// VecGetValues(Vec x,PetscInt ni,const PetscInt ix[],PetscScalar y[])
+// gets y[i] = x[ix[i]], for i=0,...,ni-1.
+  VecGetValues (*v, 1, &ind, &value);//输入v,1,ind,输出value
 
   return value;
 

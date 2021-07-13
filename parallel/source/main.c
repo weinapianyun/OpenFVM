@@ -18,8 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h> // 默认IO库
+#include <stdlib.h> //基本函数库
 #include <string.h> //字符串处理
 #include <malloc.h> //动态内存
 #include <math.h> //普通数学计算

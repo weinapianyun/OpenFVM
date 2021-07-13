@@ -60,7 +60,7 @@ typedef struct
 
   float value;
 
-} par_probe; //？？
+} par_probe; //参数探测
 
 typedef struct
 {
@@ -130,7 +130,7 @@ typedef struct
   int fill;
   float pf;
 
-} par_parameter; //求解计算参数设置
+} par_parameter; //求解计算参数设置结构
 
 par_parameter parameter;
 

@@ -28,9 +28,9 @@ Vec Co;
 Vec Col;
 
 Vec uf;
-
 Vec dens, visc, spheat, thcond;
 Vec densl, viscl, spheatl, thcondl;
+
 
 Vec xu0, xv0, xw0, xp0, xT0, xs0;
 Vec xu0l, xv0l, xw0l, xp0l, xT0l, xs0l;
