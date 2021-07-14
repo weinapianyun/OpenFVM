@@ -24,7 +24,7 @@
 typedef Vector *(*PrecondProcType)(QMatrix *, Vector *, Vector *, double);
 
 /* declaration of preconditioners */
-
+// Jacibo、SSOR、ILU 预处理子
 Vector *JacobiPrecond(QMatrix *A, Vector *y, Vector *c, double Omega);
 Vector *SSORPrecond(QMatrix *A, Vector *y, Vector *c, double Omega);
 Vector *ILUPrecond(QMatrix *A, Vector *y, Vector *c, double Omega);

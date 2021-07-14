@@ -25,7 +25,7 @@
 typedef Vector *(*IterProcType)(QMatrix *, Vector *, Vector *, int,
 				PrecondProcType, double);
 
-/* classical iterative methods */
+/* classical iterative methods  古典迭代算法 */
 Vector *JacobiIter(QMatrix *A, Vector *x, Vector *b, int NoIter,
 	    PrecondProcType Dummy, double Omega);
 Vector *SORForwIter(QMatrix *A, Vector *x, Vector *b, int NoIter,
@@ -35,12 +35,12 @@ Vector *SORBackwIter(QMatrix *A, Vector *x, Vector *b, int NoIter,
 Vector *SSORIter(QMatrix *A, Vector *x, Vector *b, int NoIter,
             PrecondProcType Dummy, double Omega);
 
-/* semi-iterative methods */
+/* semi-iterative methods  半迭代算法 包括埃特金算法， 切比雪夫加速方法*/
 
 Vector *ChebyshevIter(QMatrix *A, Vector *x, Vector *b, int MaxIter,
-            PrecondProcType PrecondProc, double OmegaPrecond);
+            PrecondProcType PrecondProc, double OmegaPrecond); // 切比雪夫
 
-/* CG and CG-like methods */
+/* CG and CG-like methods  共轭梯度系列迭代算法*/
 
 Vector *CGIter(QMatrix *A, Vector *x, Vector *b, int MaxIter, 
             PrecondProcType PrecondProc, double OmegaPrecond);

@@ -48,7 +48,7 @@ typedef struct
   int element; //单元
 
   msh_vector cface;
-  int pair; //相邻单元数目
+  int pair; //是否有共同界面
 
   msh_vector n;
 

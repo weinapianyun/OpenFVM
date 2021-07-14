@@ -23,11 +23,13 @@
 
 /* the following macro allows to optimize vector operations
    for different computer architecture */
+
 #if !defined(__hppa) && !defined(sparc)
 #define for_AllCmp for(Ind = 1; Ind <= Dim; Ind++)
 #else
 #define for_AllCmp for(Ind = Dim; Ind > 0; Ind--)
-#endif   
+#endif
+// 以上宏允许针对不同的计算机架构优化向量操作
 
 Vector *Asgn_VV(Vector *V1, Vector *V2)
 /* VRes = V1 = V2 */

@@ -35,7 +35,7 @@
 
 #include "globals.h" //全局变量
 #include "geocalc.h" //物理向量的计算
-#include "parser.h" //？？
+#include "parser.h" //
 #include "post.h" //后处理
 #include "decomp.h" //网格划分
 #include "reorder.h" //节点重排序

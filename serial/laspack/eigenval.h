@@ -22,6 +22,7 @@
 #include "copyrght.h"
 
 /* estimation of extremal eigenvalues */
+// 极值特征值的估计
 
 void SetEigenvalAccuracy(double Eps);
 double GetMinEigenval(QMatrix *Q, PrecondProcType PrecondProc, double OmegaPrecond);

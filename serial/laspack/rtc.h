@@ -22,7 +22,7 @@
 #include "copyrght.h"
 
 /* identifiers for iteration methods */
-
+// 迭代方法的标识符
 typedef enum {
     /* classical iterative methods */
 	GSIterId,
@@ -44,6 +44,7 @@ typedef enum {
     BiCGSTABIterId,
 
     /* multigrid and multigrid based methods */
+    // 多重网格系列算法
     MGIterId,
     NestedMGIterId,
     MGPCGIterId,

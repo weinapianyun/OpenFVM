@@ -31,13 +31,14 @@ V_Constr (Vec * v, int n, int sequential)
 {
 
   if (sequential == 1)
-    VecCreateSeq (PETSC_COMM_SELF, n, v);
+    VecCreateSeq (PETSC_COMM_SELF, n, v); // 创建一个标准的、顺序数组样式的向量
   else
     {
+      // 在每个处理器上创建一个带有 ghost 填充的并行向量
       VecCreateGhost (PETSC_COMM_WORLD, n, PETSC_DECIDE, nbghosts, ghosts, v);
     }
 
-  VecSetFromOptions (*v);
+  VecSetFromOptions (*v); // 从选项数据库配置向量
 
 }
 
@@ -54,7 +55,7 @@ void
 V_SetCmp (Vec * v, int ind, double value)
 {
 
-  VecSetValue (*v, ind, value, INSERT_VALUES);
+  VecSetValue (*v, ind, value, INSERT_VALUES); // 将向量v 的 ind行 直接设置为 value
 
 }
 
@@ -62,10 +63,11 @@ void
 V_SetAllCmp (Vec * v, double value)
 {
 
-  VecSet (*v, value);
+  VecSet (*v, value); // 将一个向量v 全部设置为 value
 
-  VecAssemblyBegin (*v);
-  VecAssemblyEnd (*v);
+  // 在完成对 VecSetValues() 的所有调用后，应调用下面两个函数
+  VecAssemblyBegin (*v); // 开始组装向量
+  VecAssemblyEnd (*v); // 完成组装向量
 
 }
 
@@ -74,9 +76,10 @@ V_GetCmp (Vec * v, int ind)
 {
 
   double value;
-// VecGetValues(Vec x,PetscInt ni,const PetscInt ix[],PetscScalar y[])
-// gets y[i] = x[ix[i]], for i=0,...,ni-1.
-  VecGetValues (*v, 1, &ind, &value);//输入v,1,ind,输出value
+
+  // 从向量的某些位置获取值,目前只能在同一个处理器上获取值
+  VecGetValues (*v, 1, &ind, &value);
+  // gets y[i] = x[ix[i]], for i=0,...,ni-1.
 
   return value;
 

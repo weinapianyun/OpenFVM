@@ -66,6 +66,7 @@ Real Q_GetVal(QMatrix *Q, size_t RoC, size_t Entry);
 void Q_AddVal(QMatrix *Q, size_t RoC, size_t Entry, Real Val);
 
 /* macros for fast access */
+// 用于快速访问的宏
 #define     Q__GetLen(PtrQ, RoC)               (PtrQ)->Len[RoC]
 #define     Q__SetEntry(PtrQ, RoC, Entry, Pos_, Val_) { \
                 (PtrQ)->El[RoC][Entry].Pos = (Pos_); \

@@ -21,37 +21,37 @@
 //PETSc
 #include "petscksp.h"
 
-Vec cex, cey, cez;
-Vec cexl, ceyl, cezl;
+Vec cex, cey, cez; // 单元中心坐标
+Vec cexl, ceyl, cezl; // 单元中心坐标中间变量
 
-Vec Co;
+Vec Co; // 柯朗数
 Vec Col;
 
-Vec uf;
-Vec dens, visc, spheat, thcond;
+Vec uf; //面上的速度标量值
+Vec dens, visc, spheat, thcond; // 密度、粘度、比热、热导率
 Vec densl, viscl, spheatl, thcondl;
 
-
-Vec xu0, xv0, xw0, xp0, xT0, xs0;
+// A x = b
+Vec xu0, xv0, xw0, xp0, xT0, xs0; // 解向量的上一迭代步的值
 Vec xu0l, xv0l, xw0l, xp0l, xT0l, xs0l;
 
-Vec xu, xv, xw, xp, xT, xs;
+Vec xu, xv, xw, xp, xT, xs; //解向量的当前迭代步待求值
 Vec xul, xvl, xwl, xpl, xTl, xsl;
 
-Vec xuf, xvf, xwf, xpf, xTf, xsf;
+Vec xuf, xvf, xwf, xpf, xTf, xsf;//解向量的当前迭代步 单元界面上的待求值
 
-Mat Am, Ac, Ae, As;
+Mat Am, Ac, Ae, As; // 动量方程、连续性方程、能量方程、VOF对流方程的系数矩阵
 
-Vec bu, bv, bw, bp, bT, bs;
+Vec bu, bv, bw, bp, bT, bs; // 代数方程组的右端向量
 
-Vec hu, hv, hw;
+Vec hu, hv, hw; // SIMPLE法中的 H 项
 Vec hul, hvl, hwl;
 
-Vec ap;
+Vec ap; // 离散化方程中的系数项
 Vec apl;
 
 Vec xpp, xTp;
 
-Vec betaf;
+Vec betaf; // CICSAM格式中的 beta 因子
 
-Vec temp1, temp2;
+Vec temp1, temp2; // 中间变量
