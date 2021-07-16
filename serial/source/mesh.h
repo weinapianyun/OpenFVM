@@ -40,20 +40,20 @@ typedef struct
 
   int index;
 
-  int type;
+  int type; // 类型
 
-  int nbnodes;
-  int *node;
+  int nbnodes; // 节点数目
+  int *node; // 指向节点
 
-  int element;
+  int element; // 所属网格编号
 
   msh_vector cface;
-  int pair;
+  int pair; // 相邻界面的状态
 
   msh_vector n;
 
-  msh_vector A;
-  double Aj;
+  msh_vector A; // 面的法向向量
+  double Aj; // 面的面积
 
   msh_vector d;
   double dj;

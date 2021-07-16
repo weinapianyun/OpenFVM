@@ -59,5 +59,5 @@
 
 #define MAXFACES 6
 
-int verbose;
-int pchecks;
+int verbose; // 猜测：打印各种测试语句
+int pchecks; // 猜测：检查是否满足质量守恒

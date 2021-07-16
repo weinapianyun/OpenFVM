@@ -38,7 +38,7 @@
 #include "solve.h"
 
 void
-AllocateMemory ()
+AllocateMemory () // 申请获取内存
 {
 
   V_Constr (&Co, "Courant number", nbelements, Normal, True);
@@ -78,7 +78,7 @@ AllocateMemory ()
 }
 
 void
-DeallocateMemory ()
+DeallocateMemory () // 销毁申请内存
 {
 
   V_Destr (&Co);
@@ -118,18 +118,18 @@ DeallocateMemory ()
 }
 
 void
-CheckMassConservationError (double dt)
+CheckMassConservationError (double dt) // 检查速度通量的连续性
 {
 
   int i, j;
 
   int face, pair;
 
-  int element;
+  int element; // 网格单元编号
 
   double mcp;
 
-  double sum;
+  double sum; // 统计 Mass conservation error
 
   sum = 0.0;
 
@@ -160,26 +160,27 @@ CheckMassConservationError (double dt)
 }
 
 void Solve (char *var, int *fiter, double dt, double *maxCp, int verbose, int pchecks)
-{
+{  /*  SIMPLE算法的一个时间步迭代求解过程  */
 
   int i;
 
-  CalculateGamma (var, fiter, dt, maxCp, verbose, pchecks);
+  CalculateGamma (var, fiter, dt, maxCp, verbose, pchecks); // 计算单元相函数
 
   // Set material properties 
   SetMaterialProperties ();
 
+  // 系数变量初始化 ap、H
   V_SetAllCmp (&ap, 1.0);
 
   V_SetAllCmp (&hu, 0.0);
   V_SetAllCmp (&hv, 0.0);
   V_SetAllCmp (&hw, 0.0);
 
-  CalculateVelocity (var, fiter, dt, *maxCp, verbose, pchecks);
+  CalculateVelocity (var, fiter, dt, *maxCp, verbose, pchecks); // 求解速度场
 
-  CalculatePressure (var, fiter, dt, *maxCp, verbose, pchecks);
+  CalculatePressure (var, fiter, dt, *maxCp, verbose, pchecks); // 求解压力场
 
-  CorrectVelocity (var, fiter, dt, *maxCp, verbose, pchecks);
+  CorrectVelocity (var, fiter, dt, *maxCp, verbose, pchecks); // 修正速度场
 
   if (pchecks == LOGICAL_TRUE)
     {
@@ -187,6 +188,6 @@ void Solve (char *var, int *fiter, double dt, double *maxCp, int verbose, int pc
       CheckMassConservationError (dt);
     }
 
-  CalculateTemperature (var, fiter, dt, *maxCp, verbose, pchecks);
+  CalculateTemperature (var, fiter, dt, *maxCp, verbose, pchecks); // 求解温度场
 
 }

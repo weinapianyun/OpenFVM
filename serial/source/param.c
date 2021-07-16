@@ -177,8 +177,8 @@ ParImportPAR (char *file)
 
   int inull;
 
-  int tcode;
-  int nbpar;
+  int tcode; // 参数类型
+  int nbpar; // 参数的数目
 
   FILE *fp;
   char descr[512];
@@ -204,7 +204,7 @@ ParImportPAR (char *file)
 
       do
 	{
-	  fscanf (fp, "%s", descr);
+	  fscanf (fp, "%s", descr); // 从流 fp 读取连续字符，直到遇到一个空格字符
 
 	  if (strcmp (descr, "$Parameter") == 0)
 	    break;
@@ -221,14 +221,14 @@ ParImportPAR (char *file)
       if (strcmp (descr, "$Parameter") == 0)
 	{
 
-	  fscanf (fp, "%d %d ", &inull, &nbpar);
+	  fscanf (fp, "%d %d ", &inull, &nbpar); // 从 fp 中读取 十进制整数
 
 	  GetLine (fp);
 
 	  for (i = 0; i < nbpar; i++)
 	    {
 
-	      fscanf (fp, "%d %d", &tcode, &n);
+	      fscanf (fp, "%d %d", &tcode, &n); // 读入 参数类型
 
 	      switch (tcode)
 		{

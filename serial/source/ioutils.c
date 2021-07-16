@@ -26,14 +26,14 @@ GetLine (FILE * fp)
 
   char one_char;
 
-  one_char = fgetc (fp);
+  one_char = fgetc (fp); // 从流 fp 获取下一个字符
 
   do
     {
       one_char = fgetc (fp);
 
     }
-  while (!feof (fp) && one_char != 10);
+  while (!feof (fp) && one_char != 10); // 直到读取到最后一个字符，或者换行符
 
 }
 

@@ -34,73 +34,79 @@
 #include "gamma.h"
 
 double
-CalculateMaxCourantNumber (double dt, int interface)
+CalculateMaxCourantNumber (double dt, int interface) // 计算最大柯朗数
 {
 
   unsigned int i, j;
 
-  register unsigned int face;
-  register unsigned int element;
+  // 使用cpu内部寄存器的变量，加快变量的读写速度; 一般int把变量放在内存中
+  register unsigned int face; // 单元界面编号
+  register unsigned int element; // 网格单元编号
 
-  double Cpp;
-  double Cj;
+  double Cpp; // 单元柯朗数
+  double Cj; // 中间参数：各单元界面的贡献
 
-  double s, cs;
+  double s; // 单元体积的充填比例(相函数)
+  double cs; // 中间参数：？
   
-  double maxCp;
+  double maxCp; // 最大柯朗数
 
   maxCp = 0.0;
 
   for (i = 0; i < nbelements; i++)
-    {
+  {
 
       element = i;
 
       if (interface == 1)
-      {     
+      {
+        // 保证得到 0<s<1 的网格单元的充填饱和度
       	s = LMIN(LMAX(V_GetCmp (&xs, element + 1), 0.0), 1.0);
-      	cs = (1.0 - s) * (1.0 - s) * s * s * 16.0;    
+
+      	cs = (1.0 - s) * (1.0 - s) * s * s * 16.0;
       }
       else
       {
         cs = 1.0;
       }
-      
+
       Cpp = 0.0;
 
       for (j = 0; j < elements[element].nbfaces; j++)
-	{
+      {
 
-	  face = elements[element].face[j];
+	    face = elements[element].face[j];
 
-          Cj = LMAX (-V_GetCmp (&uf, face + 1) * faces[face].Aj * dt / elements[element].Vp, 0.0);
-          Cpp += cs * Cj;
+	    Cj = LMAX (-V_GetCmp (&uf, face + 1) * faces[face].Aj * dt /
+	            elements[element].Vp, 0.0); // 计算单元每个界面的贡献 Co = u*dt*S/V
+	    Cpp += cs * Cj; // 计算单元的柯朗数
 
-	}
+      }
 
       maxCp = LMAX (maxCp, Cpp);
 
       V_SetCmp (&Co, element + 1, Cpp);
 
-    }
+  }
 
   return maxCp;
 
 }
 
 void
-CorrectFaceGamma ()
+CorrectFaceGamma () // 修正单元界面上的相函数
 {
 
   int i;
 
+  // 使用cpu内部寄存器的变量，加快变量的读写速度
   register unsigned int face, pair;
   register unsigned int element, neighbor;
 
   double betaj;
 
   for (i = 0; i < nbfaces; i++)
-    {
+  {
 
       face = i;
 
@@ -139,12 +145,12 @@ CorrectFaceGamma ()
 
 	}
 
-    }
+  }
 
 }
 
 void
-PredictBeta ()
+PredictBeta () // 预测 beta 值
 {
 
   unsigned int i;
@@ -274,7 +280,7 @@ PredictBeta ()
 }
 
 void
-CorrectBeta (double dt)
+CorrectBeta (double dt) // 修正 beta 值
 {
 
   unsigned int i;
@@ -527,7 +533,7 @@ SmoothScalar (Vector * xm, Vector * x, int n)
 }
 
 void
-CalculateMassFraction ()
+CalculateMassFraction () // 计算流场充填流体的质量
 {
 
   unsigned int i;
@@ -557,7 +563,7 @@ CalculateMassFraction ()
 }
 
 void
-BuildVolumeOfFluidMatrix (double dt)
+BuildVolumeOfFluidMatrix (double dt) // 创建 VOF 矩阵
 {
 
   unsigned int i, j, n;
@@ -671,11 +677,12 @@ BuildVolumeOfFluidMatrix (double dt)
 }
 
 void
-SolveVolumeOfFluidExplicit (double dt)
+SolveVolumeOfFluidExplicit (double dt) // 显式求解流场单元体积比
 {
 
   unsigned int i, j, n;
 
+  // 直接调用CPU寄存器中变量
   unsigned int face, pair;
   register unsigned int element;
   unsigned int neighbor;
@@ -714,9 +721,9 @@ SolveVolumeOfFluidExplicit (double dt)
 
 	      // UDS
 	      if (V_GetCmp (&uf, face + 1) > 0.0)
-		betaj = 0.0;
+	          betaj = 0.0;
 	      else
-		betaj = 1.0;
+	          betaj = 1.0;
 
 	    }
 	  else
@@ -724,9 +731,9 @@ SolveVolumeOfFluidExplicit (double dt)
 
 	      // CDS
 	      if (V_GetCmp (&uf, face + 1) > 0.0)
-		betaj = V_GetCmp (&betaf, face + 1);
+	          betaj = V_GetCmp (&betaf, face + 1);
 	      else
-		betaj = 1.0 - V_GetCmp (&betaf, face + 1);
+	          betaj = 1.0 - V_GetCmp (&betaf, face + 1);
 
 	    }
 
@@ -742,15 +749,18 @@ SolveVolumeOfFluidExplicit (double dt)
 	      ani[n] = neighbor;
 	      n++;
 
-	      bip += -0.5 * (1.0 - betaj) * V_GetCmp (&uf, face + 1) * faces[face].Aj * V_GetCmp (&xs, element + 1);
+	      bip += -0.5 * (1.0 - betaj) * V_GetCmp (&uf, face + 1) *
+	              faces[face].Aj * V_GetCmp (&xs, element + 1);
 
-	      bip += -0.5 * betaj * V_GetCmp (&uf, face + 1) * faces[face].Aj * V_GetCmp (&xs, neighbor + 1);
+	      bip += -0.5 * betaj * V_GetCmp (&uf, face + 1) *
+	              faces[face].Aj * V_GetCmp (&xs, neighbor + 1);
 
 	    }
 	  else
 	    {
 
-	      bip += -1.0 * V_GetCmp (&uf, face + 1) * faces[face].Aj * V_GetCmp (&xsf, face + 1);
+	      bip += -1.0 * V_GetCmp (&uf, face + 1) * faces[face].Aj *
+	              V_GetCmp (&xsf, face + 1);
 
 	    }
 
@@ -780,7 +790,7 @@ SolveVolumeOfFluidExplicit (double dt)
 
 void
 CalculateGamma (char *var, int *fiter, double dt, double *maxCp, int verbose,
-		int pchecks)
+		int pchecks) // 计算流场的相函数
 {
 
   unsigned int i, j;
@@ -790,7 +800,7 @@ CalculateGamma (char *var, int *fiter, double dt, double *maxCp, int verbose,
   double mtime;
 
   if (parameter.calc[is] == LOGICAL_FALSE)
-    return;
+      return;
 
   if (parameter.vofastemp == LOGICAL_TRUE)
   {

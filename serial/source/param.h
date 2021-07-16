@@ -74,20 +74,20 @@ typedef struct
   char uenergy[3];
   char utemperature[3];
 
-  int inertia;
+  int inertia; // 惯性
 
   float dfactor;
 
   float st;
 
-  int scheme[6];
+  int scheme[6]; // 迭代方法
 
-  int restart;
+  int restart; // 重启间隔
 
-  int wbinary;
+  int wbinary; // 写二进制文件
 
-  int steady;
-  int adjdt;
+  int steady; // 流动是否定常
+  int adjdt; // 时间步长调节
 
   float maxCp;
 
@@ -97,14 +97,14 @@ typedef struct
   int northocor;
   float orthof;
 
-  float ftol[6];
+  float ftol[6]; // 各变量总计残差
 
-  int ncicsamsteps;
-  int ncicsamcor;
+  int ncicsamsteps; // CICSAM方法的计算步数
+  int ncicsamcor; // CICSAM方法的修正次数
   float kq;
-  int nsav;
+  int nsav; // 保存次数
 
-  int calc[6];
+  int calc[6]; // 判断各场变量是否被计算
 
   int savflux;
 
@@ -119,7 +119,7 @@ typedef struct
   int vortex[3];
   int streamf;
 
-  float t0, t1, dt;
+  float t0, t1, dt; // 开始、结束计算的时间，时间步
   float g[3];
 
   int probe[6];
@@ -127,13 +127,13 @@ typedef struct
   int msolver[6];
   int mprecond[6];
 
-  int timemethod[6];
+  int timemethod[6]; // 各流场变量的时间离散方法
   float ef[6];
 
-  int fill;
-  float pf;
+  int fill; // 充满状态
+  float pf; // 充填百分比
 
-  int vofastemp;
+  int vofastemp; // 用相函数 s 的值初始化 温度 T
 
 } par_parameter;
 
