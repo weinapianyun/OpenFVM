@@ -21,7 +21,7 @@
 #include "../laspack/laspack.h"
 
 Vector Co; // 柯朗数
-Vector uf; // Uf，单元界面上的速度
+Vector uf; // Uf，单元界面上的速度矢量
 
 Vector dens, visc, thcond, spheat; // 密度、粘度、热导率、比热
 

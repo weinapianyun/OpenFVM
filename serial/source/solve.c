@@ -118,56 +118,57 @@ DeallocateMemory () // 销毁申请内存
 }
 
 void
-CheckMassConservationError (double dt) // 检查速度通量的连续性
+CheckMassConservationError (double dt) // 检查质量守恒的误差
 {
 
   int i, j;
 
-  int face, pair;
+  int face; // 单元面的编号，
+ // int pair; // 相邻界面的状态
 
   int element; // 网格单元编号
 
-  double mcp;
+  double mcp; // 单元速度通量 Uf*A
 
   double sum; // 统计 Mass conservation error
 
-  sum = 0.0;
+  sum = 0.0; // 初始化
 
-  for (i = 0; i < nbelements; i++)
-    {
+  for (i = 0; i < nbelements; i++) // 遍历网格单元
+  {
 
       element = i;
 
-      mcp = 0.0;
+      mcp = 0.0; // 单元内初始化
 
-      for (j = 0; j < elements[element].nbfaces; j++)
-	{
+      for (j = 0; j < elements[element].nbfaces; j++) // 遍历单元的界面
+	 {
+          face = elements[element].face[j];
 
-	  face = elements[element].face[j];
+	      // pair = faces[face].pair;
 
-	  pair = faces[face].pair;
+	      mcp += V_GetCmp (&uf, face + 1) * faces[face].Aj; // mcp = Uf*A
 
-	  mcp += V_GetCmp (&uf, face + 1) * faces[face].Aj;
+	 }
 
-	}
+      sum += LABS (mcp); // 各单元误差累计
 
-      sum += LABS (mcp);
-
-    }
+  }
 
   printf ("\nMass conservation error: %+E kg\n", sum);
 
 }
 
-void Solve (char *var, int *fiter, double dt, double *maxCp, int verbose, int pchecks)
+void
+Solve (char *var, int *fiter, double dt, double *maxCp, int verbose, int pchecks)
 {  /*  SIMPLE算法的一个时间步迭代求解过程  */
 
-  int i;
+  // int i;
 
   CalculateGamma (var, fiter, dt, maxCp, verbose, pchecks); // 计算单元相函数
 
   // Set material properties 
-  SetMaterialProperties ();
+  SetMaterialProperties (); // 设置材料参数
 
   // 系数变量初始化 ap、H
   V_SetAllCmp (&ap, 1.0);

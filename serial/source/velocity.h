@@ -20,6 +20,6 @@
 
 
 void CalculateVelocity (char *var, int *fiter, double dt, double maxCp,
-			int verbose, int pchecks);
+                        int verbose, int pchecks); // 计算速度场
 void CorrectVelocity (char *var, int *fiter, double dt, double maxCp,
-		      int verbose, int pchecks);
+                      int verbose, int pchecks); // 修正速度场

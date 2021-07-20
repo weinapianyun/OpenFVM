@@ -35,7 +35,7 @@ GetEntrySurface (FILE * fp, int j)
 
   gs = calloc (MAXL, sizeof (char));
 
-  fscanf (fp, "%d", &ival);
+  fscanf (fp, "%d", &ival); // 从流 fp 中读取格式化输入
   bcsurfaces[nbbcsurfaces + j].physreg = ival;
 
   fscanf (fp, "%s", gs);

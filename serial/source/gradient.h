@@ -18,5 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+// 梯度计算的 CG 单元基法 , 其中 bound 用来选择处理边界界面的变量值的方法
 msh_vector Gradient (Vector * phi, Vector * phif, int bound, int element);
+// 梯度计算的 CG 顶点基法 , 其中 phin 为节点上的变量值 , 由节点周围的单元中心值进行计算
 msh_vector GradientN (Vector * phin, Vector * phif, int bound, int element);

@@ -34,30 +34,31 @@
 #include "velocity.h"
 
 void
-CorrectVelocityField ()
+CorrectVelocityField () // 修正网格单元中心的速度值
 {
 
   unsigned int i, j;
 
+  // 从寄存器中读取 编号数据
   register unsigned int face;
   register unsigned int element;
 
-  msh_vector gradp;
+  msh_vector gradp; // 临时存储压力梯度值
 
-  msh_vector sum1;
-  msh_vector sum2;
+  msh_vector sum1; // 存储 界面法向向量各分量的 ABS值之和
+  msh_vector sum2; // 存储 每个面心速度值与各面矢量分量的积 Uf * A.x 之和
 
-  double u, v, w;
+  double u, v, w; // 临时存储速度的修正值
 
-  if (parameter.calc[is] == LOGICAL_TRUE)
-    {
+  if (parameter.calc[is] == LOGICAL_TRUE) // 若相函数需要计算
+  {
 
-      for (i = 0; i < nbelements; i++)
+      for (i = 0; i < nbelements; i++) // 遍历网格单元
 	{
 
 	  element = i;
 
-	  sum1.x = 0.0;
+	  sum1.x = 0.0; // 初始化
 	  sum1.y = 0.0;
 	  sum1.z = 0.0;
 
@@ -70,16 +71,19 @@ CorrectVelocityField ()
 
 	      face = elements[element].face[j];
 
+	      // 得到单元所有界面法向矢量在 X Y Z 方向投影的绝对值
 	      sum1.x += LABS (faces[face].A.x);
 	      sum1.y += LABS (faces[face].A.y);
 	      sum1.z += LABS (faces[face].A.z);
 
+	      // 得到界面面心速度与各界面法向投影的积 , Uf * A.x = Ufx * | A | , A = |A|*n
 	      sum2.x += V_GetCmp (&uf, face + 1) * faces[face].A.x;
 	      sum2.y += V_GetCmp (&uf, face + 1) * faces[face].A.y;
 	      sum2.z += V_GetCmp (&uf, face + 1) * faces[face].A.z;
 
 	    }
 
+	  // 修正网格单元中心的速度 Ux = 求和(Ufx * |A|) / 求和|A.x|
 	  u = sum2.x / sum1.x;
 	  v = sum2.y / sum1.y;
 	  w = sum2.z / sum1.z;
@@ -88,56 +92,58 @@ CorrectVelocityField ()
 	  //printf("v: %f\n", v);
 	  //printf("w: %f\n", w);
 
+	  // 用修正后的速度 U 更新解向量 X
 	  V_SetCmp (&xu, element + 1, u);
 	  V_SetCmp (&xv, element + 1, v);
 	  V_SetCmp (&xw, element + 1, w);
 
 	}
 
-    }
-  else
-    {
+  }
+  else // 若此时  无需计算相函数
+  {
 
-      for (i = 0; i < nbelements; i++)
+      for (i = 0; i < nbelements; i++) // 遍历网格单元
 	{
 
 	  element = i;
 
-	  gradp = Gradient (&xp, &xpf, LOGICAL_TRUE, element);
+	  gradp = Gradient (&xp, &xpf, LOGICAL_TRUE, element); // 计算单元压力梯度值
 
+	  // SIMPLE法-使用动量方程变换的离散形式修正速度场 —— U = (Hu - gradP) / ap
 	  V_SetCmp (&xu, element + 1, (V_GetCmp (&hu, element + 1) - gradp.x) / V_GetCmp (&ap, element + 1));
 	  V_SetCmp (&xv, element + 1, (V_GetCmp (&hv, element + 1) - gradp.y) / V_GetCmp (&ap, element + 1));
 	  V_SetCmp (&xw, element + 1, (V_GetCmp (&hw, element + 1) - gradp.z) / V_GetCmp (&ap, element + 1));
 
 	}
 
-    }
+  }
 
 }
 
 void
-CorrectFaceUVW ()
+CorrectFaceUVW () // 修正单元界面面心的速度值
 {
 
   int i;
 
-  unsigned int face, pair;
+  unsigned int face, pair; // 网格单元的面编号、共面状态
 
-  register unsigned int element;
-  unsigned int neighbor;
+  register unsigned int element; // 网格单元的单元编号
+  unsigned int neighbor; // 相邻单元的编号
 
-  double apj;
+  double apj; // 存储 界面面心的 ap 系数
 
   //double dNf, dPf;
-  double lambda;
+  double lambda; // 界面变量插值因子
 
-  double ppl;
-  double pnl;
+  double ppl; // 存储单元 P 的上一轮迭代压力值
+  double pnl; // 存储单元 N 的上一轮迭代压力值
 
-  msh_vector gradpp;
-  msh_vector gradpn;
+  msh_vector gradpp; // 单元 P 的压力梯度
+  msh_vector gradpn; // 相邻单元 N 的压力梯度
 
-  for (i = 0; i < nbfaces; i++)
+  for (i = 0; i < nbfaces; i++) // 遍历所有界面
     {
 
       face = i;
@@ -146,15 +152,15 @@ CorrectFaceUVW ()
 
       pair = faces[face].pair;
 
-      if (parameter.orthof != 0.0)
-	gradpp = Gradient (&xp, &xpf, LOGICAL_TRUE, element);
+      if (parameter.orthof != 0.0) // 网格非正交
+          gradpp = Gradient (&xp, &xpf, LOGICAL_TRUE, element); // 计算单元 P 的压力梯度值
 
-      if (pair != -1)
+      if (pair != -1) // 非边界界面
 	{
 
 	  neighbor = faces[pair].element;
 
-	  /*
+	  /*   // 计算 lambda 的值
 	  dNf = GeoMagVector (GeoSubVectorVector (elements[neighbor].celement, faces[face].cface));
 	  dPf = GeoMagVector (GeoSubVectorVector (elements[element].celement, faces[face].cface));
 
@@ -163,44 +169,57 @@ CorrectFaceUVW ()
 
 	  lambda = 0.5;
 
-	  apj = V_GetCmp (&ap, neighbor + 1) * lambda + V_GetCmp (&ap, element + 1) * (1.0 - lambda);
+	  apj = V_GetCmp (&ap, neighbor + 1) * lambda +
+	          V_GetCmp (&ap, element + 1) * (1.0 - lambda); // 插值得到界面上的 ap系数值
 
 	  if (parameter.orthof != 0.0)
-	    gradpn = Gradient (&xp, &xpf, LOGICAL_TRUE, neighbor);
+	    gradpn = Gradient (&xp, &xpf, LOGICAL_TRUE, neighbor); // 计算单元 N 的压力梯度值
 
-	  ppl = V_GetCmp (&xp, element + 1);
-
-	  if (parameter.orthof != 0.0)
-	    {
-	      ppl += parameter.orthof * GeoDotVectorVector (gradpp, GeoSubVectorVector (faces[face].rpl, elements[element].celement));
-	    }
-
-	  pnl = V_GetCmp (&xp, neighbor + 1);
+	  ppl = V_GetCmp (&xp, element + 1); // 先将单元 P 上一轮压力迭代值Pp 放入 ppl中
 
 	  if (parameter.orthof != 0.0)
 	    {
-	      pnl += parameter.orthof * GeoDotVectorVector (gradpn, GeoSubVectorVector (faces[face].rnl, elements[neighbor].celement));
+	      // 计算单元 P 的辅助节点P'的压力值 ppl
+	      ppl += parameter.orthof * GeoDotVectorVector (gradpp,
+                                                        GeoSubVectorVector (faces[face].rpl,
+                                                                            elements[element].celement));
 	    }
 
-	  V_SetCmp (&uf, face + 1, V_GetCmp (&uf, face + 1) - 1.0 / apj * (pnl - ppl) / (faces[face].dj + faces[face].kj));
+	  pnl = V_GetCmp (&xp, neighbor + 1); // 将单元 N 上一轮压力迭代值Pn 放入 pnl中
 
+	  if (parameter.orthof != 0.0)
+	    {
+	      // 计算单元 N 的辅助节点N'的压力值 pnl
+	      pnl += parameter.orthof * GeoDotVectorVector (gradpn,
+                                                        GeoSubVectorVector (faces[face].rnl,
+                                                                            elements[neighbor].celement));
+	    }
+
+	  // 根据修正的压力值计算界面面心速度 Uf = Ufl - 1/ap*(Pnl-Ppl)/ |df|
+	  V_SetCmp (&uf, face + 1, V_GetCmp (&uf, face + 1) -
+              1.0 / apj * (pnl - ppl) /
+              (faces[face].dj + faces[face].kj)); // df的表达？？
+
+	  // 根据界面的单位法向矢量，由Uf得到 X Y Z 方向的速度分量
 	  V_SetCmp (&xuf, face + 1, V_GetCmp (&uf, face + 1) * faces[face].n.x);
 	  V_SetCmp (&xvf, face + 1, V_GetCmp (&uf, face + 1) * faces[face].n.y);
 	  V_SetCmp (&xwf, face + 1, V_GetCmp (&uf, face + 1) * faces[face].n.z);
 
 	}
-      else
+      else // 边界界面
 	{
 
-	  apj = V_GetCmp (&ap, element + 1);
+	  apj = V_GetCmp (&ap, element + 1); // 将界面所在单元上轮迭代的的ap系数作为界面当前的ap系数
 
-	  ppl = V_GetCmp (&xp, element + 1);
+	  ppl = V_GetCmp (&xp, element + 1); // 将单元 P 上一轮压力迭代值Pp 放入 ppl中
 
-	  if (parameter.orthof != 0.0)
+	  if (parameter.orthof != 0.0) // 网格非正交
 	    {
+	      // 计算单元 P 的辅助节点P'的压力值 ppl
 	      ppl += parameter.orthof * GeoDotVectorVector (gradpp, GeoSubVectorVector (faces[face].rpl, elements[element].celement));
 	    }
 
+	  // 根据边界面的性质来修正界面的速度场
 	  if (faces[face].bc == PERMEABLE)
 	    {
 
@@ -284,7 +303,7 @@ CorrectFaceUVW ()
 }
 
 void
-CalculateCorrectionFactors ()
+CalculateCorrectionFactors () // 计算速度求解中出现的系数 Hu  Hv Hw
 {
 
   AddAsgn_VV (&hu, Mul_QV (Sub_QQ (Diag_Q (&Am), &Am), &xu));
@@ -585,8 +604,8 @@ BuildMomentumMatrix (double dt)
 }
 
 void
-CorrectVelocity (char *var, int *fiter, double dt, double maxCp, int verbose,
-		 int pchecks)
+CorrectVelocity (char *var, int *fiter, double dt, double maxCp,
+                 int verbose,int pchecks) // 修正所有网格单元的速度场
 {
 
   if (parameter.calc[ip] == LOGICAL_TRUE) 
@@ -607,28 +626,28 @@ CalculateVelocity (char *var, int *fiter, double dt, double maxCp,
 		   int verbose, int pchecks)
 {
 
-  double mres;
-  int miter;
-  double mtime;
+  double mres; // 残差
+  int miter; // 迭代次数
+  double mtime; // 计算时间
 
   Q_Constr (&Am, "Momentum matrix", nbelements, False, Rowws, Normal, True);
   V_Constr (&bu, "Momentum source x-component", nbelements, Normal, True);
   V_Constr (&bv, "Momentum source y-component", nbelements, Normal, True);
   V_Constr (&bw, "Momentum source z-component", nbelements, Normal, True);
 
-  // Store previous time step values
+  // Store previous time step values  存储上一迭代步的变量值
   Asgn_VV (&xu0, &xu);
   Asgn_VV (&xv0, &xv);
   Asgn_VV (&xw0, &xw);
 
   // Build three momentum matrices for u, v, w velocity components
   if (parameter.calc[ip] == LOGICAL_TRUE)
-    {
+  {
       BuildMomentumMatrix (dt);
-    }
+  }
 
   if (pchecks == LOGICAL_TRUE)
-    {
+  {
       if (!CheckIfDiagonalMatrix (&Am))
 	{
 	  printf ("\nWarning: Momentum matrix is not diagonal dominant\n");
@@ -638,11 +657,10 @@ CalculateVelocity (char *var, int *fiter, double dt, double maxCp,
 	  WriteVector (&bw);
 	  //exit (LOGICAL_ERROR);
 	}
-    }
+  }
 
   if (parameter.calc[iu] == LOGICAL_TRUE)
-    {
-
+  {
       fiter[iu]++;
 
       // Set matrix solution accuracy
@@ -663,10 +681,10 @@ CalculateVelocity (char *var, int *fiter, double dt, double maxCp,
 	  exit (LOGICAL_ERROR);
 	}
 
-    }
+  }
 
   if (parameter.calc[iv] == LOGICAL_TRUE)
-    {
+  {
 
       fiter[iv]++;
 
@@ -677,20 +695,19 @@ CalculateVelocity (char *var, int *fiter, double dt, double maxCp,
       SolveMatrix (&Am, &xv, &bv, &miter, &mres, &mtime, parameter.msolver[iv], parameter.mprecond[iv], parameter.miter[iv]);
 
       if (verbose == LOGICAL_TRUE)
-	printf
-	  ("\nMatrix %c Number of iterations: %d Residual: %+E Time: %+E\n",
+          printf("\nMatrix %c Number of iterations: %d Residual: %+E Time: %+E\n",
 	   var[iv], miter, mres, mtime);
 
       if (mres > parameter.mtol[iv] && miter == parameter.miter[iv])
-	{
-	  printf ("\nError: Problem solving matrix %c\n", var[iv]);
-	  exit (LOGICAL_ERROR);
-	}
+      {
+          printf ("\nError: Problem solving matrix %c\n", var[iv]);
+          exit (LOGICAL_ERROR);
+	  }
 
-    }
+  }
 
   if (parameter.calc[iw] == LOGICAL_TRUE)
-    {
+  {
 
       fiter[iw]++;
 
@@ -701,20 +718,19 @@ CalculateVelocity (char *var, int *fiter, double dt, double maxCp,
       SolveMatrix (&Am, &xw, &bw, &miter, &mres, &mtime, parameter.msolver[iw], parameter.mprecond[iw], parameter.miter[iw]);
 
       if (verbose == LOGICAL_TRUE)
-	printf
-	  ("\nMatrix %c Number of iterations: %d Residual: %+E Time: %+E\n",
+          printf("\nMatrix %c Number of iterations: %d Residual: %+E Time: %+E\n",
 	   var[iw], miter, mres, mtime);
 
-      if ((mres > parameter.mtol[iw] && miter == parameter.miter[iw])
-	  || LASResult () != LASOK)
-	{
-	  printf ("\nProblem solving matrix %c\n", var[iw]);
-	  exit (LOGICAL_ERROR);
-	}
+      if ((mres > parameter.mtol[iw] && miter == parameter.miter[iw])||
+            LASResult () != LASOK)
+      {
+          printf ("\nProblem solving matrix %c\n", var[iw]);
+          exit (LOGICAL_ERROR);
+      }
 
-    }
+  }
 
-  // Calculate correction factors
+  // Calculate correction factors  计算下一迭代步中的系数 H
   if (parameter.calc[ip] == LOGICAL_TRUE)
     {
       CalculateCorrectionFactors (&Am, &xu, &xv, &xw, &hu, &hv, &hw);

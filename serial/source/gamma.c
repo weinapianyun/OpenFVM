@@ -795,9 +795,9 @@ CalculateGamma (char *var, int *fiter, double dt, double *maxCp, int verbose,
 
   unsigned int i, j;
 
-  double mres;
-  int miter;
-  double mtime;
+  double mres; // 残差
+  int miter; // 迭代
+  double mtime; // 时间
 
   if (parameter.calc[is] == LOGICAL_FALSE)
       return;

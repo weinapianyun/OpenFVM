@@ -30,42 +30,42 @@ msh_vector
 Gradient (Vector * phi, Vector * phif, int bound, int element)
 {
 
-  // Cell based
+  // Cell based 梯度计算的 CG单元基法
 
   int j;
 
   int neighbor, face, pair;
 
-  double phij;
+  double phij; // 界面面心的变量值
 
   //double dNf, dPf;
-  double lambda;
+  double lambda; // 插值因子
 
   double v1, v2;
   double v1min, v1max, v2min, v2max;
 
-  double factor;
+  double factor; // 梯度计算的中间变量
 
   double fv;
-  msh_vector rv;
+  msh_vector rv; // 存储梯度变量值
  
-  rv.x = 0.0;
+  rv.x = 0.0; // 梯度变量初始化
   rv.y = 0.0;
   rv.z = 0.0;
 
-  for (j = 0; j < elements[element].nbfaces; j++)
-    {
+  for (j = 0; j < elements[element].nbfaces; j++) // 遍历所计算单元的所有界面
+  {
 
       face = elements[element].face[j];
 
       pair = faces[face].pair;
 
-      if (pair != -1)
+      if (pair != -1) // 非边界单元
 	{
 
 	  neighbor = faces[pair].element;
 
-          /*
+	  /*
 	  dNf =
 	    GeoMagVector (GeoSubVectorVector
 			  (elements[neighbor].celement, faces[face].cface));
@@ -73,19 +73,18 @@ Gradient (Vector * phi, Vector * phif, int bound, int element)
 	    GeoMagVector (GeoSubVectorVector
 			  (elements[element].celement, faces[face].cface));
 
-	  lambda = dPf / (dPf + dNf);
+	  lambda = dPf / (dPf + dNf); // 插值因子的计算
 	  */
 
 	  lambda = 0.5;
 
-	  // Element face variable
+	  // Element face variable , 插值算法 Uf = UNf λ + UP (1 − λ)
+	  phij = V_GetCmp (phi, neighbor + 1) * lambda +
+	          V_GetCmp (phi, element + 1) * (1.0 - lambda);
 
-	  phij = V_GetCmp (phi, neighbor + 1) * lambda + V_GetCmp (phi, element + 1) * (1.0 - lambda);
+	  factor =  phij / elements[element].Vp; // 中间变量
 
-	  factor =  phij / elements[element].Vp;
-
-	  // Element center gradient
-
+	  // Element center gradient , deta U = 求和（Uf * Af ）/ Vp
 	  rv.x += factor * faces[face].A.x;
 	  rv.y += factor * faces[face].A.y;
 	  rv.z += factor * faces[face].A.z;
@@ -97,9 +96,9 @@ Gradient (Vector * phi, Vector * phif, int bound, int element)
 	  // Element face variable
 
 	  if (bound == LOGICAL_TRUE)
-	    phij = V_GetCmp (phif, face + 1);
+	    phij = V_GetCmp (phif, face + 1); // 边界界面直接取边界条件的值
 	  else
-	    phij = V_GetCmp (phi, element + 1);
+	    phij = V_GetCmp (phi, element + 1); // 直接取网格单元中心的值作为面上的值
 
 	  factor =  phij / elements[element].Vp;
 
@@ -111,9 +110,9 @@ Gradient (Vector * phi, Vector * phif, int bound, int element)
 
 	}
 
-    }
+  }
 
-  // Eliminate local extrema
+  // Eliminate local extrema , 消除局部极值
 
   v1min = +GREAT;
   v1max = -GREAT;
@@ -166,17 +165,17 @@ msh_vector
 GradientN (Vector * phin, Vector * phif, int bound, int element)
 {
 
-  // Node based
+  // Node based 梯度计算的 CG 顶点基法
 
   int j, k;
 
-  int node, face, pair;
+  int node, face, pair; // 节点编号，界面编号，界面共面状态
 
-  double phij;
+  double phij; // 界面面心的变量值
 
-  double factor;
+  double factor; // 中间变量
 
-  msh_vector rv;
+  msh_vector rv; // 存储变量值
 
   rv.x = 0.0;
   rv.y = 0.0;
@@ -189,24 +188,24 @@ GradientN (Vector * phin, Vector * phif, int bound, int element)
 
       pair = faces[face].pair;
 
-      if (pair != -1)
+      if (pair != -1) // 非边界界面
 	{
 
 	  phij = 0.0;
 
-	  for (k = 0; k < faces[face].nbnodes; k++)
+	  for (k = 0; k < faces[face].nbnodes; k++) // 遍历界面包含的节点
 	    {
 
 	      node = faces[face].node[k];
 
-	      phij += V_GetCmp (phin, node + 1);
+	      phij += V_GetCmp (phin, node + 1); // phin 为节点的变量值
 
 	    }
 
 	  // Element face variable
 
 	  if (faces[face].nbnodes > 0)
-	    phij /= faces[face].nbnodes;
+	      phij /= faces[face].nbnodes; // Uf = 求和(Ufn) / Nf
 
 	  factor =  phij / elements[element].Vp;
 
@@ -221,11 +220,11 @@ GradientN (Vector * phin, Vector * phif, int bound, int element)
 	{
 
 	  // Element face variable
-	  if (bound == LOGICAL_TRUE)
+	  if (bound == LOGICAL_TRUE) // 边界界面直接取边界条件的值
 	    {
 	      phij = V_GetCmp (phif, face + 1);
 	    }
-	  else
+	  else // 由节点变量值计算界面变量值
 	    {
 	      phij = 0.0;
 

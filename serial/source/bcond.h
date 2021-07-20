@@ -22,7 +22,7 @@ enum
 {
   NONE = 0,
   EMPTY,
-  CYCLIC,
+  CYCLIC, // 循环
   PROCESSOR,
   OPEN,
   INLET,
@@ -65,11 +65,11 @@ typedef struct
 typedef struct
 {
 
-  int physreg;
+  int physreg; // 物理编号
 
-  int bc;
+  int bc; // 边界条件类型
 
-  char *fu, *fv, *fw;
+  char *fu, *fv, *fw; //
   char *fp;
   char *fT;
   char *fs;
@@ -77,10 +77,10 @@ typedef struct
 } bcd_volume;
 
 // Boundary conditions
-int nbbcsurfaces;
-bcd_surface *bcsurfaces;
+int nbbcsurfaces; // 设有边界条件的单元界面的数目
+bcd_surface *bcsurfaces; // 指向设有边界条件的网格单元界面
 
-int nbbcvolumes;
-bcd_volume *bcvolumes;
+int nbbcvolumes; // 设有边界条件的单元体的数目
+bcd_volume *bcvolumes; // 指向设有边界条件的网格单元
 
 int BcdImportBCD (char *file);

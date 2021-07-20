@@ -91,11 +91,11 @@ typedef struct
 
   float maxCp;
 
-  float mtol[6];
-  int miter[6];
+  float mtol[6]; // 动量方程的的总残差eps
+  int miter[6]; // 动量方程的总迭代次数
 
   int northocor;
-  float orthof;
+  float orthof; // 网格的正交程度，0 为正交
 
   float ftol[6]; // 各变量总计残差
 

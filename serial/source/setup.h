@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-void SetInitialConditions ();
-void SetInitialFlux ();
-void SetBoundary ();
-void SetMaterialProperties ();
+void SetInitialConditions (); // 设置初始条件
+void SetInitialFlux (); // 设置初始界面流量
+void SetBoundary (); // 设置边界条件
+void SetMaterialProperties (); // 设置材料性质参数

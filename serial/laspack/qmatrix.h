@@ -50,6 +50,7 @@ typedef struct QMatrixType {
     struct QMatrixType *ILU;
 } QMatrix;
 
+// QMatrix 类型的构造函数
 void Q_Constr(QMatrix *Q, char *Name, size_t Dim, Boolean Symmetry,
               ElOrderType ElOrder, InstanceType Instance, Boolean OwnData);
 void Q_Destr(QMatrix *Q);

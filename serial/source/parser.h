@@ -14,7 +14,7 @@ char *errorp;
 double oldval;
 double cx, cy, cz;
 
-/* local prototypes: */
+/* local prototypes:  本地原型 */
 int calcu ();
 int evaluate (char *line, double *prev_result);
 

@@ -36,7 +36,7 @@
 #include "setup.h"
 
 void
-SetInitialConditions ()
+SetInitialConditions () // 设置初始条件
 {
 
   int i, j;
@@ -55,6 +55,7 @@ SetInitialConditions ()
 
       elements[element].bc = NONE;
 
+      // 初始化解向量 X
       V_SetCmp (&xu, element + 1, 0.0);
       V_SetCmp (&xv, element + 1, 0.0);
       V_SetCmp (&xw, element + 1, 0.0);
@@ -64,27 +65,30 @@ SetInitialConditions ()
 
     }
 
-  for (j = 0; j < nbbcvolumes; j++)
-    {
+  for (j = 0; j < nbbcvolumes; j++) // 遍历边界条件
+  {
 
       volume = j;
 
-      for (i = 0; i < nbelements; i++)
+      for (i = 0; i < nbelements; i++) // 遍历网格单元
 	{
 
 	  element = i;
 
+	  // 通过物理编号寻找边界单元
 	  if (elements[element].physreg == bcvolumes[volume].physreg)
-	    {
+	  {
 
 	      elements[element].bc = bcvolumes[volume].bc;
 
+	      // 设置网格中心
 	      cx = elements[element].celement.x;
 	      cy = elements[element].celement.y;
 	      cz = elements[element].celement.z;
 
+	      // 设置边界单元的物理值
 	      strcpy (gs, bcvolumes[volume].fu);
-	      strcat (gs, "\n");
+	      strcat (gs, "\n"); // 把 "\n"追加到 gs 所指向的字符串的结尾
 	      rv = evaluate (gs, &value);
 	      V_SetCmp (&xu, element + 1, value);
 
@@ -113,20 +117,20 @@ SetInitialConditions ()
 	      rv = evaluate (gs, &value);
 	      V_SetCmp (&xs, element + 1, value);
 
-	    }
+	  }
 
 	}
 
-    }
+  }
 
   free (gs);
 
-  for (j = 0; j < nbbcvolumes; j++)
+  for (j = 0; j < nbbcvolumes; j++) // 释放指向边界条件值的指针
     {
 
       volume = j;
 
-      free (bcvolumes[volume].fu);
+      free (bcvolumes[volume].fu); // 边界面上速度值
       free (bcvolumes[volume].fv);
       free (bcvolumes[volume].fw);
       free (bcvolumes[volume].fp);
@@ -137,6 +141,7 @@ SetInitialConditions ()
 
   free (bcvolumes);
 
+  // 将初始条件设为上一轮迭代值
   Asgn_VV (&xu0, &xu);
   Asgn_VV (&xv0, &xv);
   Asgn_VV (&xw0, &xw);
@@ -147,7 +152,7 @@ SetInitialConditions ()
 }
 
 void
-SetInitialFlux ()
+SetInitialFlux () // 设置界面初始流量 Uf*A
 {
 
   int i;
@@ -156,21 +161,21 @@ SetInitialFlux ()
   int element, neighbor;
 
   //double dNf, dPf;
-  double lambda;
+  double lambda; // 界面插值因子
 
-  for (i = 0; i < nbfaces; i++)
+  for (i = 0; i < nbfaces; i++) // 遍历所有界面
     {
 
       face = i;
 
-      element = faces[face].element;
+      element = faces[face].element; // 界面所在网格单元
 
-      pair = faces[face].pair;
+      pair = faces[face].pair; // 界面共面状态(判断是否为外表面)
 
-      if (pair != -1)
+      if (pair != -1) // 若界面为内部界面
 	{
 
-	  neighbor = faces[pair].element;
+	  neighbor = faces[pair].element; // 得到共界面的另一网格单元
 
 	  /*
 	  dNf =
@@ -185,17 +190,17 @@ SetInitialFlux ()
           
 	  lambda = 0.5;
 
-	  // Element face velocity 
+	  // Element face velocity  计算面心速度 及 速度通量
 	  V_SetCmp (&uf, face + 1,
 		    (V_GetCmp (&xu, neighbor + 1) * lambda + V_GetCmp (&xu, element + 1) * (1.0 - lambda)) * faces[face].n.x +
 		    (V_GetCmp (&xv, neighbor + 1) * lambda + V_GetCmp (&xv, element + 1) * (1.0 - lambda)) * faces[face].n.y +
 		    (V_GetCmp (&xw, neighbor + 1) * lambda + V_GetCmp (&xw, element + 1) * (1.0 - lambda)) * faces[face].n.z);
 
 	}
-      else
+      else // 若界面为外表面
 	{
 
-	  // Element face velocity 
+	  // Element face velocity 计算面心速度 及 速度通量
 	  V_SetCmp (&uf, face + 1,
 		    V_GetCmp (&xu, element + 1) * faces[face].n.x +
 		    V_GetCmp (&xv, element + 1) * faces[face].n.y +
@@ -208,7 +213,7 @@ SetInitialFlux ()
 }
 
 void
-SetBoundary ()
+SetBoundary () // 设置边界条件
 {
 
   int i, j, n;
@@ -222,8 +227,8 @@ SetBoundary ()
 
   gs = calloc (MAXL, sizeof (char));
 
-  for (i = 0; i < nbfaces; i++)
-    {
+  for (i = 0; i < nbfaces; i++) // 设置非边界界面面心的物理值
+  {
 
       face = i;
 
@@ -234,6 +239,7 @@ SetBoundary ()
 	  faces[face].bc = NONE;
 	}
 
+      // 设置单元界面面向上的解向量 X
       V_SetCmp (&xuf, face + 1, 0.0);
       V_SetCmp (&xvf, face + 1, 0.0);
       V_SetCmp (&xwf, face + 1, 0.0);
@@ -241,32 +247,34 @@ SetBoundary ()
       V_SetCmp (&xsf, face + 1, 0.0);
       V_SetCmp (&xTf, face + 1, 0.0);
 
-    }
+  }
 
-  for (j = 0; j < nbbcsurfaces; j++)
-    {
+  for (j = 0; j < nbbcsurfaces; j++) // 遍历设有边界条件的界面
+  {
 
       surface = j;
 
-      for (i = 0; i < nbfaces; i++)
+      for (i = 0; i < nbfaces; i++) // 遍历所有的界面
 	{
 
 	  face = i;
 
 	  pair = faces[face].pair;
 
-	  if (pair != -1)
+	  if (pair != -1) // 非边界界面
 	    continue;
 
-	  if (faces[face].physreg == bcsurfaces[surface].physreg)
-	    {
+	  if (faces[face].physreg == bcsurfaces[surface].physreg) // 寻找物理编号相同的界面
+	  {
 
-	      faces[face].bc = bcsurfaces[surface].bc;
+	      faces[face].bc = bcsurfaces[surface].bc; // 边界类型
 
+	      // 设置面心坐标
 	      cx = faces[face].cface.x;
 	      cy = faces[face].cface.y;
 	      cz = faces[face].cface.z;
 
+	      // 设置边界单元界面面心的物理值
 	      strcpy (gs, bcsurfaces[surface].fu);
 	      strcat (gs, "\n");
 	      rv = evaluate (gs, &value);
@@ -297,11 +305,11 @@ SetBoundary ()
 	      rv = evaluate (gs, &value);
 	      V_SetCmp (&xsf, face + 1, value);
 
-	    }
+	  }
 
 	}
 
-    }
+  }
 
   free (gs);
 
@@ -324,19 +332,20 @@ SetBoundary ()
   n = 0;
 
   for (i = 0; i < nbfaces; i++)
-    {
+  {
       face = i;
 
-      if (faces[face].bc == CYCLIC)
+      if (faces[face].bc == CYCLIC) // 循环界面需特殊处理
 	{
 	  if (n < 2)
 	    {
-	      cyclic[n] = face;
+	      cyclic[n] = face; // 匹配两个循环面
 	      n++;
 	    }
 	}
-    }
+  }
 
+  /*  存在较多循环面时无法进行批量匹配  */
   if (n == 2)
     {
       faces[cyclic[0]].pair = cyclic[1];
@@ -351,7 +360,7 @@ SetBoundary ()
 }
 
 void
-SetMaterialProperties ()
+SetMaterialProperties () // 设置材料性质参数
 {
 
   int i;
@@ -360,7 +369,7 @@ SetMaterialProperties ()
 
   double fr[2];
 
-  for (i = 0; i < nbelements; i++)
+  for (i = 0; i < nbelements; i++) // 遍历网格单元
     {
 
       element = i;

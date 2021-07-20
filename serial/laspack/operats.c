@@ -31,8 +31,7 @@
 #endif
 // 以上宏允许针对不同的计算机架构优化向量操作
 
-Vector *Asgn_VV(Vector *V1, Vector *V2)
-/* VRes = V1 = V2 */
+Vector *Asgn_VV(Vector *V1, Vector *V2) /* VRes = V1 = V2 */
 {
     Vector *VRes;
 

@@ -26,9 +26,10 @@ static ElType ZeroEl = { 0, 0.0 };
 
 static int ElCompar(const void *El1, const void *El2);
 
+
 void Q_Constr(QMatrix *Q, char *Name, size_t Dim, Boolean Symmetry,
               ElOrderType ElOrder, InstanceType Instance, Boolean OwnData)
-/* constructor of the type QMatrix */
+/*  constructor of the type QMatrix   QMatrix 类型(矩阵)的构造函数  */
 {
     size_t RoC;
 

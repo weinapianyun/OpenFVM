@@ -50,7 +50,7 @@ int
 Simulation (char *path) // 模拟执行函数
 {
 
-  int i, n;
+  int i, n; // 循环参数
 
   int d; // 储存double的字节数
 

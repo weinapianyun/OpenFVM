@@ -48,9 +48,9 @@ typedef struct
   int element; // 所属网格编号
 
   msh_vector cface;
-  int pair; // 相邻界面的状态
+  int pair; // 界面共面的状态
 
-  msh_vector n;
+  msh_vector n; // 面的法向单位矢量
 
   msh_vector A; // 面的法向向量
   double Aj; // 面的面积
@@ -58,11 +58,11 @@ typedef struct
   msh_vector d;
   double dj;
   double kj;
-  msh_vector rpl;
-  msh_vector rnl;
+  msh_vector rpl; // 单元 P 辅助节点P'的位矢
+  msh_vector rnl; // 单元 N 辅助节点N'的位矢
 
-  int physreg;
-  int elemreg;
+  int physreg; // 物理编号
+  int elemreg; // 网格编号
 
   int bc;
 
@@ -76,7 +76,7 @@ typedef struct
   int type;
 
   msh_vector normal;
-  msh_vector celement;
+  msh_vector celement; // 网格中心
 
   int nbnodes;
   int *node;
@@ -89,12 +89,12 @@ typedef struct
   double Ap;
   double Vp;
 
-  int physreg;
+  int physreg; // 物理编号
   int elemreg;
 
   int process;
 
-  int bc;
+  int bc; // 边界条件类型判别
 
   double *b;
   double *c;
