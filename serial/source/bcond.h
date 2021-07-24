@@ -21,25 +21,25 @@
 enum
 {
   NONE = 0,
-  EMPTY,
+  EMPTY, // 空的
   CYCLIC, // 循环
-  PROCESSOR,
-  OPEN,
-  INLET,
-  PRESSUREINLET,
-  OUTLET,
-  ADIABATICWALL,
-  MOVINGWALL,
-  WALL,
-  SLIP,
-  PERMEABLE,
-  CONSTRAINTU,
+  PROCESSOR, // 进程边界
+  OPEN, // 开放
+  INLET, // 入口
+  PRESSUREINLET, // 恒压入口
+  OUTLET, // 出口
+  ADIABATICWALL, // 绝热墙
+  MOVINGWALL, // 移动墙
+  WALL, // 无滑移
+  SLIP, // 滑移
+  PERMEABLE, // 可渗透
+  CONSTRAINTU, // 速度约束
   CONSTRAINTV,
   CONSTRAINTW,
-  CONSTRAINT,
-  PRESSURE,
-  SURFACE,
-  VOLUME
+  CONSTRAINT, // 温度约束
+  PRESSURE, // 压力
+  SURFACE, // 表面
+  VOLUME // 体
 } bcd_type;
 
 typedef struct
@@ -83,4 +83,4 @@ bcd_surface *bcsurfaces; // 指向设有边界条件的网格单元界面
 int nbbcvolumes; // 设有边界条件的单元体的数目
 bcd_volume *bcvolumes; // 指向设有边界条件的网格单元
 
-int BcdImportBCD (char *file);
+int BcdImportBCD (char *file); // 边界条件参数(.bcd文件)导入

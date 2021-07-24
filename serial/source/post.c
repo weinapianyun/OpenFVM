@@ -464,7 +464,7 @@ WriteProbeViews (FILE * fp, char *var, double curtime)
 
   // Create probe views
   for (k = 0; k < nphi; k++)
-    {
+  {
 
       if (parameter.probe[k] == LOGICAL_FALSE)
 	continue;
@@ -488,7 +488,6 @@ WriteProbeViews (FILE * fp, char *var, double curtime)
 	    vs = V_GetCmp (&xs, element + 1);
 
 	  se[element] = vs;
-
 	}
 
       /*

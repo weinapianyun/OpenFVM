@@ -186,7 +186,7 @@ Solve (char *var, int *fiter, double dt, double *maxCp, int verbose, int pchecks
   if (pchecks == LOGICAL_TRUE)
     {
       // Check mass conservation
-      CheckMassConservationError (dt);
+      CheckMassConservationError (dt); // 检查并打印出 流场单元质量守恒的误差
     }
 
   CalculateTemperature (var, fiter, dt, *maxCp, verbose, pchecks); // 求解温度场

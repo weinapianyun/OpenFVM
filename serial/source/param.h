@@ -42,7 +42,8 @@ enum
   sCGS,
   sBICG,
   sBICGS
-} par_solver;
+} par_solver; // 迭代标志
+// (0-Jacobi, 1-SOR, 2-QMR, 3-GMRES, 4-CG, 5-CGN, 6-CGS, 7-BiCG, 8-BiCGStab)
 
 enum
 {
@@ -51,7 +52,7 @@ enum
   pSOR,
   pILU,
   pASM
-} par_precond;
+} par_precond;  // 预处理标志 (0-Null, 1-Jacobi, 2-SOR, 3-ILU)
 
 typedef struct
 {
@@ -78,33 +79,34 @@ typedef struct
 
   float dfactor;
 
-  float st;
+  float st; // 猜测：时间放缩因子
 
   int scheme[6]; // 迭代方法
 
-  int restart; // 重启间隔
+  int restart; // 重启迭代次数(时间步数)
 
   int wbinary; // 写二进制文件
 
-  int steady; // 流动是否定常
+  int steady; // 流场流动的稳定判断
   int adjdt; // 时间步长调节
 
-  float maxCp;
+  float maxCp; // 最大courant number
 
-  float mtol[6]; // 动量方程的的总残差eps
+  // 判断内外迭代收敛的条件
+  float mtol[6]; // 内迭代的终止残差 eps
   int miter[6]; // 动量方程的总迭代次数
 
   int northocor;
   float orthof; // 网格的正交程度，0 为正交
 
-  float ftol[6]; // 各变量总计残差
+  float ftol[6]; // 各变量外迭代偏差允许值
 
   int ncicsamsteps; // CICSAM方法的计算步数
   int ncicsamcor; // CICSAM方法的修正次数
   float kq;
   int nsav; // 保存次数
 
-  int calc[6]; // 判断各场变量是否被计算
+  int calc[6]; // 判断各流场变量是否计算
 
   int savflux;
 
@@ -124,8 +126,8 @@ typedef struct
 
   int probe[6];
 
-  int msolver[6];
-  int mprecond[6];
+  int msolver[6]; // 迭代方法
+  int mprecond[6]; // 预处理方法
 
   int timemethod[6]; // 各流场变量的时间离散方法
   float ef[6];

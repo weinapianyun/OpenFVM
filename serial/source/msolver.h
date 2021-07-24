@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-void PrintVector (Vector * x);
-void WriteVector (Vector * x);
-void WriteMatrix (QMatrix * A, int symmetric);
-int CheckIfDiagonalMatrix (QMatrix * A);
+void PrintVector (Vector * x); // 在命令行中打印向量X
+void WriteVector (Vector * x); // 将向量写入vector.m文件中
+void WriteMatrix (QMatrix * A, int symmetric); // 将矩阵A 写入文件Matrix.m中
+int CheckIfDiagonalMatrix (QMatrix * A); // 检查矩阵A是否 弱对角占优
 void SolveMatrix (QMatrix * A, Vector * x, Vector * b, int *iter, double *res,
-		  double *time, int msolver, int mprecond, int miter);
+		  double *time, int msolver, int mprecond, int miter); // 求解线性代数矩阵

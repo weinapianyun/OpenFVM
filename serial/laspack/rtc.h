@@ -53,10 +53,10 @@ typedef enum {
 
 typedef void (*RTCAuxProcType)(int, double, double, IterIdType);
 
-void SetRTCAccuracy(double Eps);
+void SetRTCAccuracy(double Eps); // 设置求解终止残差(RTS)
 void SetRTCAuxProc(RTCAuxProcType AuxProc);
 Boolean RTCResult(int Iter, double rNorm, double bNorm, IterIdType IterId);
-int GetLastNoIter(void);
-double GetLastAccuracy(void);
+int GetLastNoIter(void); // 获取最后一次迭代后的总迭代次数
+double GetLastAccuracy(void); // 获取在迭代最后达到的精度
 
 #endif /* RTC_H */

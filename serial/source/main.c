@@ -52,17 +52,17 @@ Simulation (char *path) // 模拟执行函数
 
   int i, n; // 循环参数
 
-  int d; // 储存double的字节数
+  int d; // 储存 double-字节数
 
   char var[6]; // 流场变量标志
 
   double fres[6]; // 存储各变量残差
-  int fiter[6]; // 存储各变量迭代次数
+  int fiter[6]; // 存储各(变量)方程 求解的次数
 
-  int iter; // 迭代次数
+  int iter; // 外迭代次数
 
   double starttime, endtime, curtime, dt; // 开始、结束时间，当前时间，时间步
-  double wtime, wdt; // 写文件的时间，写文件的时间间隔
+  double wtime, wdt; // 写文件的时刻，写文件的时间间隔
 
   int irestart; // 重启间隔
 
@@ -73,12 +73,13 @@ Simulation (char *path) // 模拟执行函数
 
   char *file; // 存储输入文件的字符名
 
+  // 文件指针
   FILE *fpresults;		// Output to gmsh post-processing file (results)
   FILE *fpprobe;		// Output to gnuplot file (probe)
   FILE *fpresiduals;	// Output to gnuplot file (residuals)
   FILE *fprestart;		// Input/Output for restart
 
-  var[iu] = 'u';
+  var[iu] = 'u'; // 存储字符 'u'
   var[iv] = 'v';
   var[iw] = 'w';
   var[ip] = 'p';
@@ -89,184 +90,186 @@ Simulation (char *path) // 模拟执行函数
   printf ("\n");
   printf ("Allocating memory...\n");
 
-  AllocateMemory ();
+  AllocateMemory (); // 分配内存空间
 
   printf ("Memory allocated.\n");
 
-  // Set initial conditions
+  // Set initial conditions  设置初始条件
   SetInitialConditions ();
 
-  // Set initial flux
+  // Set initial flux  设置初始流量
   SetInitialFlux ();
 
-  // Set boundary velocity and pressure
+  // Set boundary velocity and pressure  设置边界条件
   SetBoundary ();
 
-  // Set material properties 
+  // Set material properties  设置材料性质参数
   SetMaterialProperties ();
 
-  // Set time intervals
+  // Set time intervals  设置时间间隔
   starttime = parameter.t0;
   endtime = parameter.t1;
   curtime = parameter.t0;
   dt = parameter.dt;
 
   // Set restart intervals
-  irestart = parameter.restart; // 设置重新计算的时间步数
+  irestart = parameter.restart; // 设置重新计算的 迭代次数/时间步数
 
   // Allocate memory for file string
-  file = calloc (strlen (path) + 9, sizeof (char)); // 储存文件的全名
+  file = calloc (strlen (path) + 9, sizeof (char)); // 存储 文件的全名
 
-  // Read restart file
-  sprintf (file, "%s.ini", path);
+  // Read restart file  读取重启文件
+  sprintf (file, "%s.ini", path); // 将字符串"path.ini"格式化输出到 file指向的字符串中
 
-  fprestart = fopen (file, "rb"); // 打开一个二进制文件，文件必须存在，只允许读
+  fprestart = fopen (file, "rb"); // 新建 path.ini二进制文件，将内容清空，以只读形式打开
 
-  if (fprestart != NULL)
-    {
+  if (fprestart != NULL) // 若.ini文件不为空
+  {
 
-      ReadRestart (fprestart, &curtime); // 读取重新计算的时间步
+      ReadRestart (fprestart, &curtime); // 读取重启时间步的流场数据
 
-      endtime += curtime;
+      endtime += curtime; // 更新终止计算时间
 
       fclose (fprestart); // 关闭流 fprestart, 刷新所有的缓冲区
 
-    }
+  }
 
-  if (parameter.steady == LOGICAL_TRUE) // 是否进行稳定/收敛判断
-    {
+  if (parameter.steady == LOGICAL_TRUE) // 若流场流动已经稳定
+  {
 
       sprintf (file, "%s.res", path); // 将字符串 path.res 放到 file 中
 
       // Open output files for residuals
-      fpresiduals = fopen (file, "w"); // 新建一个文本文件，已存在的文件将内容清空，只允许写
-    }
+      fpresiduals = fopen (file, "w"); // 新建 path.res文件，将内容清空，以只写形式打开
+  }
 
-  sprintf (file, "%s.pos", path);
+  sprintf (file, "%s.pos", path); // 将字符串 path.pos 放到 file 中
 
   // Open output file for results
-  fpresults = fopen (file, "w"); // 新建 .pos文件，只允许写
+  fpresults = fopen (file, "w"); // 新建 path.pos文件，将内容清空，以只写形式打开
 
-  d = sizeof (double); // double类型的字节数
+  d = sizeof (double); // 存储 double类型的 字节数
 
-  if (parameter.wbinary == LOGICAL_TRUE) // 是否写为二进制类型文件
-    {
+  if (parameter.wbinary == LOGICAL_TRUE) // 判断建立的 pos文件是否为二进制类型
+  {
+      // 将相应的字符串写入 path.pos文件中
       fprintf (fpresults, "$PostFormat\n");
       fprintf (fpresults, "%g %d %d\n", 1.3, 1, d);
       fprintf (fpresults, "$EndPostFormat\n");
-    }
+  }
   else
-    {
+  {
       fprintf (fpresults, "$PostFormat\n");
       fprintf (fpresults, "%g %d %d\n", 1.2, 0, d);
       fprintf (fpresults, "$EndPostFormat\n");
-    }
+  }
 
-  WriteResults (fpresults, LOGICAL_TRUE, LOGICAL_TRUE, curtime);
+  // 生成 gmsh的后处理文件
+  WriteResults (fpresults, LOGICAL_TRUE, LOGICAL_TRUE, curtime); // 将初始时刻的结果写入path.pos文件中
 
-  // Set write time intervals
-  if (parameter.nsav != 0)
-    wdt = (endtime - starttime) / parameter.nsav; // (末-初)/保存次数
+  // Set write time intervals  设置写入文件的时间间隔
+  if (parameter.nsav != 0) // 若设置的文件保存次数不为 0
+      wdt = (endtime - starttime) / parameter.nsav; // 文件保存时间间隔 = (末-初)/保存次数
   else
-    wdt = 2 * (endtime - starttime);
+      wdt = 2 * (endtime - starttime); // 不保存文件
 
-  wtime = wdt; // 统计写时间 初始化
+  wtime = wdt; // 写文件的时间 初始化
 
   iter = 0; // 迭代次数 初始化
 
-  fiter[iu] = 0;
+  fiter[iu] = 0; // 求解次数初始化
   fiter[iv] = 0;
   fiter[iw] = 0;
   fiter[ip] = 0;
   fiter[iT] = 0;
   fiter[is] = 0;
 
-  if (parameter.fill == LOGICAL_TRUE) // 是否计算、输出流场充填百分比
+  if (parameter.fill == LOGICAL_TRUE) // 判断是否计算、输出流场充填百分比
     {
       Vt = VolumeTotal (); // 计算流场单元 总体积
     }
 
   do
-    {
+  {
 
       curtime += dt; // 计算当前时间
 
-      iter++; // 迭代次数+1
+      iter++; // 外迭代次数 +1
 
-      printf ("\nTime = %.3E\n", curtime);
+      printf ("\nTime = %.3E\n", curtime); // 打印当前时间
 
-      Solve (var, fiter, dt, &maxCp, verbose, pchecks); // 迭代求解一个时间步
+      Solve (var, fiter, dt, &maxCp, verbose, pchecks); // 迭代求解流场一个时间步的变化
 
-      if (parameter.fill == LOGICAL_TRUE)
+      if (parameter.fill == LOGICAL_TRUE) // 判断是否计算、输出流场充填百分比
 	{
 
-	  Vc = VolumeFilled ();
+	  Vc = VolumeFilled (); // 计算流场充填的体积
 
-	  pf = Vc / Vt * 100; // 充填百分比
+	  pf = Vc / Vt * 100; // 计算充填百分比
 
-	  printf ("\nPercentage filled: %.2f%%\n", pf);
+	  printf ("\nPercentage filled: %.2f%%\n", pf); // 打印 充型体积百分比
 
-	  if (pf > parameter.pf) // 若预定充填百分比已经达到
-	    break;
+	  if (pf > parameter.pf) // 若设定的充填百分比已经达到
+	    break; // 结束外迭代
 
 	}
 
-      if (parameter.adjdt == LOGICAL_TRUE) // 是否启动时间步长调节
+      if (parameter.adjdt == LOGICAL_TRUE) // 判断是否启动时间步长调节
 	{
 
-	  if (maxCp > parameter.maxCp)
-	    dt *= 0.85 * parameter.maxCp / maxCp;
+	  if (maxCp > parameter.maxCp) // 若流场单元的最大courant数 > 设定的最大courant数
+	    dt *= 0.85 * parameter.maxCp / maxCp; // 修正-减小时间步长
 
-	  if (1.25 * maxCp < parameter.maxCp)
-	    dt *= 1.05;
+	  if (1.25 * maxCp < parameter.maxCp) // 若流场单元的最大courant数*1.25 < 设定的最大courant数
+	    dt *= 1.05; // 修正-增大时间步长
 
 	}
 
-      if (iter >= irestart) // 到达重新计算的 时间步数/迭代次数
+      if (iter >= irestart) // 判断是否到达 设定的重启的迭代次数(时间步数)
 	{
 
-	  // Write restart file
-	  sprintf (file, "%s.ini", path);
+	  // Write restart file 写重启文件
+	  sprintf (file, "%s.ini", path); // 将字符串 path.ini 放到 file 中
 
-	  fprestart = fopen (file, "wb");
+	  fprestart = fopen (file, "wb"); // 新建 path.ini二进制文件，将内容清空，以只写形式打开
 
-	  if (fprestart != NULL)
+	  if (fprestart != NULL) // 若.ini文件不为空
 	    {
-	      WriteRestart (fprestart, curtime);
+	      WriteRestart (fprestart, curtime); // 将此刻的计算场景保存至.ini文件中
 	    }
 
-	  fclose (fprestart);
+	  fclose (fprestart); // 关闭文件
 
-	  irestart += parameter.restart;
-
-	}
-
-      if (curtime > wtime + dt) // 当前时间步 计算完毕
-	{
-
-	  WriteResults (fpresults, LOGICAL_TRUE, LOGICAL_TRUE, curtime);
-
-	  //fflush (fpresults);
-
-	  // Open output file for probes          
-	  sprintf (file, "%s.prb", path);
-
-	  fpprobe = fopen (file, "w");
-
-	  WriteProbeViews (fpprobe, var, curtime);
-
-	  fclose (fpprobe);
-
-	  wtime += wdt;
+	  irestart += parameter.restart; // 设定新的重启迭代次数
 
 	}
 
-      if (parameter.steady == LOGICAL_TRUE) // 是否进行稳定/收敛 判断
+      if (curtime > wtime + dt) // 判断当前时间步 是否计算完毕
 	{
 
-	  // Get residual
-	  if (parameter.calc[iu] == LOGICAL_TRUE)
-	    fres[iu] = l2Norm_V (Sub_VV (&xu, &xu0));
+	  WriteResults (fpresults, LOGICAL_TRUE, LOGICAL_TRUE, curtime); // 将当前时刻的结果写入path.pos文件中
+
+	  //fflush (fpresults); // 清空缓冲区
+
+	  // Open output file for probes
+	  sprintf (file, "%s.prb", path); // 将字符串 path.prb 放到 file 中
+
+	  fpprobe = fopen (file, "w"); // 新建 path.prb文件，将内容清空，以只写形式打开
+
+	  WriteProbeViews (fpprobe, var, curtime); // 在当前时刻创建探测视图，写入path.prb文件中
+
+	  fclose (fpprobe); // 关闭文件
+
+	  wtime += wdt; // 写文件的时刻
+
+	}
+
+      if (parameter.steady == LOGICAL_TRUE) // 判断流场的流动过程是否已经稳定
+	{
+
+	  // Get residual 获取各变量的相对偏差
+	  if (parameter.calc[iu] == LOGICAL_TRUE) // 若求解时计算 u变量场
+	    fres[iu] = l2Norm_V (Sub_VV (&xu, &xu0)); // 计算向量V的 相对偏差范数
 	  else
 	    fres[iu] = 0.0;
 
@@ -297,25 +300,25 @@ Simulation (char *path) // 模拟执行函数
 
 	  n = 0;
 
-	  for (i = 0; i < nphi; i++)
-	    {
+	  for (i = 0; i < nphi; i++) // 遍历各变量的相对偏差
+	  {
 
 	      if (verbose == LOGICAL_TRUE)
 	          printf ("\nVariable: %c Iteration: %d Final residual: %+E\n",
-                      var[i], fiter[i], fres[i]);
+                      var[i], fiter[i], fres[i]); // 打印 求解信息
 
-	      if (fres[i] > parameter.ftol[i]) // 若变量残差大于预设值
+	      if (fres[i] > parameter.ftol[i]) // 若变量相对偏差大于设定的偏差允许值
 	          n++;
 
-	    }
+	  }
 
-	  if (n == 0)
-	    {
+	  if (n == 0)  // 若各变量均满足设定的偏差允许值
+	  {
 	      printf ("\nSteady state reached.\n");
 	      break;
-	    }
+	  }
 
-	  WriteResidual (fpresiduals, iter, fres);
+	  WriteResidual (fpresiduals, iter, fres); // 将当前时刻的相对偏差信息写入 path.res文件中
 
 	  fflush (fpresiduals); // 刷新流 fpresiduals 的输出缓冲区
 
@@ -323,42 +326,41 @@ Simulation (char *path) // 模拟执行函数
       else
 	{
 
-	  if (curtime + 0.5 * dt > endtime)
+	  if (curtime + 0.5 * dt > endtime) // 到达结束时间
 	    break;
 
 	}
 
-    }
-  while (dt > 0.0);
+  } while (dt > 0.0);
 
-  WriteResults (fpresults, LOGICAL_TRUE, LOGICAL_TRUE, curtime);
+  WriteResults (fpresults, LOGICAL_TRUE, LOGICAL_TRUE, curtime); // 将结束时刻的结果写入path.pos文件(gmsh后处理)中
 
   // Close output files
-  fclose (fpresults);
+  fclose (fpresults); // 关闭文件
 
-  if (parameter.steady == LOGICAL_TRUE)
-    {
+  if (parameter.steady == LOGICAL_TRUE) // 若流场的流动过程已经稳定
+  {
 
-      WriteResidual (fpresiduals, iter, fres); // 写残差文件
+      WriteResidual (fpresiduals, iter, fres); // 迭代完毕，将最后的相对偏差写入文件
 
-      fflush (fpresiduals);
+      fflush (fpresiduals); // 刷新流 fpresiduals 的输出缓冲区
 
-      fclose (fpresiduals);
-    }
+      fclose (fpresiduals); // 关闭文件
+  }
 
   // Open output file for probes
-  sprintf (file, "%s.prb", path);
+  sprintf (file, "%s.prb", path); // 将字符串 path.prb 放到 file 中
 
-  fpprobe = fopen (file, "w");
+  fpprobe = fopen (file, "w"); // 以只写形式打开 path.prb文件
 
-  WriteProbeViews (fpprobe, var, curtime);
+  WriteProbeViews (fpprobe, var, curtime); // 在结束时刻创建探测视图，写入path.prb文件中
 
-  fclose (fpprobe);
+  fclose (fpprobe); // 关闭文件
 
   // Release memory 
   free (file);
 
-  DeallocateMemory ();
+  DeallocateMemory (); // 释放内存空间
 
   return LOGICAL_TRUE;
 
@@ -396,7 +398,7 @@ main (int argc, char **argv) // argc为输入文件的数目, argv为指令流/�
   char *file;
 
   double start, end; // 模拟开始、结束时间
-  double elapsed;
+  double elapsed; // 模拟求解的时间
 
   printf ("\n");
   printf ("*****************************************\n");
@@ -506,6 +508,7 @@ main (int argc, char **argv) // argc为输入文件的数目, argv为指令流/�
 
   // Reorder
   if (strchr (argv[2], 'r') != NULL) // 网格单元重排序指令
+
     {
 
       strcpy (path, argv[1]);

@@ -18,5 +18,5 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-void WriteRestart (FILE * fp, double curtime);
-void ReadRestart (FILE * fp, double *curtime);
+void WriteRestart (FILE * fp, double curtime); // 将当前时刻的数据存储到重启文件中
+void ReadRestart (FILE * fp, double *curtime); // 读取重启文件的数据，并更新当前时刻

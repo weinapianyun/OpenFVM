@@ -26,7 +26,7 @@
 #endif /*  */
 #include "ttime.h"
 double
-ttime (void)
+ttime (void) // 以秒为单位返回系统时间
 {
 
   double sec;

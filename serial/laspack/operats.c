@@ -1531,18 +1531,22 @@ double l2Norm_V(Vector *V)
 
     V_Lock(V);
     
-    if (LASResult() == LASOK) {
-	Dim = V->Dim;
-        VCmp = V->Cmp;
-	Sum = 0.0;
-	for_AllCmp {
-	    Cmp = VCmp[Ind];
-	    Sum += Cmp * Cmp;
-	}
+    if (LASResult() == LASOK)
+    {
+        Dim = V->Dim;
+	    VCmp = V->Cmp;
+	    Sum = 0.0;
+	    for_AllCmp
+	    {
+	        Cmp = VCmp[Ind];
+	        Sum += Cmp * Cmp;
+	    }
         Sum *= V->Multipl * V->Multipl;
-	SRes = sqrt(Sum);
-    } else {
-	SRes = 1.0;
+	    SRes = sqrt(Sum);
+    }
+    else
+    {
+        SRes = 1.0;
     }
 
     V_Unlock(V);

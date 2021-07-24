@@ -20,7 +20,7 @@
 #include "vector.h"
 #include "qmatrix.h"
 #include "copyrght.h"
-
+// PrecondProcType 可以定义 返回类型为 vector型指针 的函数指针 (* )(QMatrix *, Vector *, Vector *, double)
 typedef Vector *(*PrecondProcType)(QMatrix *, Vector *, Vector *, double);
 
 /* declaration of preconditioners */
