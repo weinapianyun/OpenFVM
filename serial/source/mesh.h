@@ -47,7 +47,7 @@ typedef struct
 
   int element; // 所属网格编号
 
-  msh_vector cface;
+  msh_vector cface; // 质心位置
   int pair; // 界面共面的状态
 
   msh_vector n; // 面的法向单位矢量
@@ -55,16 +55,16 @@ typedef struct
   msh_vector A; // 面的法向向量
   double Aj; // 面的面积
 
-  msh_vector d;
-  double dj;
-  double kj;
+  msh_vector d; // 单元P、N 辅助节点间的位移矢量 rp'-rN'
+  double dj; // rp'-rN' 矢量的模
+  double kj; // 非正交修正量，默认为 0.0
   msh_vector rpl; // 单元 P 辅助节点P'的位矢
   msh_vector rnl; // 单元 N 辅助节点N'的位矢
 
   int physreg; // 物理编号
   int elemreg; // 网格编号
 
-  int bc;
+  int bc; // 界面边界类型
 
 } msh_face;
 

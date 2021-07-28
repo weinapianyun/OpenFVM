@@ -82,9 +82,9 @@ Gradient (Vector * phi, Vector * phif, int bound, int element)
 	  phij = V_GetCmp (phi, neighbor + 1) * lambda +
 	          V_GetCmp (phi, element + 1) * (1.0 - lambda);
 
-	  factor =  phij / elements[element].Vp; // 中间变量
+	  factor =  phij / elements[element].Vp; // 中间变量 Uf / Vp
 
-	  // Element center gradient , deta U = 求和（Uf * Af ）/ Vp
+	  // Element center gradient , grad(U) = 求和（Uf * Af ）/ Vp
 	  rv.x += factor * faces[face].A.x;
 	  rv.y += factor * faces[face].A.y;
 	  rv.z += factor * faces[face].A.z;
@@ -102,8 +102,7 @@ Gradient (Vector * phi, Vector * phif, int bound, int element)
 
 	  factor =  phij / elements[element].Vp;
 
-	  // Element center gradient
-
+	  // Element center gradient 网格单元中心的梯度值
 	  rv.x += factor * faces[face].A.x;
 	  rv.y += factor * faces[face].A.y;
 	  rv.z += factor * faces[face].A.z;
@@ -157,7 +156,7 @@ Gradient (Vector * phi, Vector * phif, int bound, int element)
   rv.y *= fv;
   rv.z *= fv;
 
-  return rv;
+  return rv; // 单元中心梯度
 
 }
 

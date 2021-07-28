@@ -1521,7 +1521,7 @@ double l1Norm_V(Vector *V)
 }
 
 double l2Norm_V(Vector *V)
-/* SRes = l2-Norm of the vector V */
+/* SRes = l2-Norm of the vector V  l2范数- 向量元素的平方和再开平方 */
 {
     double SRes;
 

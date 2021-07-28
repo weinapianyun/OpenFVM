@@ -134,6 +134,7 @@ MshCorrectNonOrthogonality ()
 
     }
 }
+
 void
 MshGetShapeFunctions ()
 {
@@ -147,8 +148,7 @@ MshGetShapeFunctions ()
   double ci, cj, ck, cl;
   double di, dj, dk, dl;
   for (i = 0; i < nbelements; i++)
-
-    {
+  {
       element = i;
       if (elements[element].type == TETRAHEDRON)
 
@@ -220,8 +220,10 @@ MshGetShapeFunctions ()
 	  elements[element].d[2] = dk;
 	  elements[element].d[3] = dl;
 	}
-}} void
+  }
+}
 
+void
 MshGetElementTypes ()
 {
 
@@ -1456,6 +1458,7 @@ MshCalcNewElementCenters ()
 	}
     }
 }
+
 void
 MshCalcPropMesh ()
 {

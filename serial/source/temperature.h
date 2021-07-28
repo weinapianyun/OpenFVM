@@ -20,4 +20,4 @@
 
 
 void CalculateTemperature (char *var, int *fiter, double dt, double maxCp,
-			   int verbose, int pchecks);
+			   int verbose, int pchecks); // 计算温度场

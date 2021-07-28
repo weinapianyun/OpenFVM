@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-double GeoMagVector (msh_vector n1);
+double GeoMagVector (msh_vector n1); // 矢量的模
 msh_vector GeoAddVectorVector (msh_vector n2, msh_vector n1);
 msh_vector GeoSubVectorVector (msh_vector n2, msh_vector n1);
 msh_vector GeoMultVectorVector (msh_vector n2, msh_vector n1);

@@ -96,7 +96,7 @@ typedef struct
   float mtol[6]; // 内迭代的终止残差 eps
   int miter[6]; // 动量方程的总迭代次数
 
-  int northocor;
+  int northocor; // 非正交修正次数，默认为 0
   float orthof; // 网格的正交程度，0 为正交
 
   float ftol[6]; // 各变量外迭代偏差允许值

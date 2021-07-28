@@ -44,8 +44,8 @@ QMatrix *Transp_Q(QMatrix *Q);
 QMatrix *Diag_Q(QMatrix *Q);
 QMatrix *Upper_Q(QMatrix *Q);
 QMatrix *Lower_Q(QMatrix *Q);
-double l1Norm_V(Vector *V);
-double l2Norm_V(Vector *V);
+double l1Norm_V(Vector *V); // l1范数-向量中非零元素的绝对值之和
+double l2Norm_V(Vector *V); // l2范数-向量元素的平方和再开平方
 double MaxNorm_V(Vector *V);
 Vector *OrthoRightKer_VQ(Vector *V, QMatrix *Q);
 Vector *OrthoLeftKer_VQ(Vector *V, QMatrix *Q);

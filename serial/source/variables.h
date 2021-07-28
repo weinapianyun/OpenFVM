@@ -34,7 +34,7 @@ QMatrix Am, Ac, Ae, As; // 动量、连续性、能量、VOF 方程的系数矩�
 Vector bu, bv, bw, bp, bT, bs; // 各项的右端向量
 
 Vector hu, hv, hw; // SIMPLE法中的 H 向量
-Vector ap; // 半离散方程中的 ap
+Vector ap; // 半离散动量方程中的 amp , 便于求解连续性方程时对amp参数的调用
 
 Vector betaf; // CICSAM格式中的 beta 因子
 

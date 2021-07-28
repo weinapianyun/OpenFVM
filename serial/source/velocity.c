@@ -216,7 +216,8 @@ CorrectFaceUVW () // 修正单元界面面心的速度值
 	  if (parameter.orthof != 0.0) // 网格非正交
 	    {
 	      // 计算单元 P 的辅助节点P'的压力值 ppl
-	      ppl += parameter.orthof * GeoDotVectorVector (gradpp, GeoSubVectorVector (faces[face].rpl, elements[element].celement));
+	      ppl += parameter.orthof * GeoDotVectorVector (gradpp,GeoSubVectorVector
+	                                    (faces[face].rpl, elements[element].celement));
 	    }
 
 	  // 根据边界面的性质来修正界面的速度场
@@ -328,12 +329,12 @@ BuildMomentumMatrix (double dt)
   register unsigned int element;
   unsigned int neighbor;
 
-  double app; // 半离散方程的系数ap
+  double app; // 半离散动量方程的系数amp
 
-  double apn[MAXFACES]; // 半离散方程的系数aN
+  double apn[MAXFACES]; // 半离散动量方程的系数amn
   unsigned int ani[MAXFACES]; // 存储界面相邻单元的编号
 
-  double bpu, bpv, bpw; // 半离散方程的系数bup
+  double bpu, bpv, bpw; // 半离散动量方程的系数bup
 
   double densp; // 单元密度
   double viscj; // 单元各界面的粘度
@@ -342,7 +343,7 @@ BuildMomentumMatrix (double dt)
   //msh_vector gradun, gradvn, gradwn;
   //msh_vector gradvisc;
 
-  msh_vector gradp;
+  //msh_vector gradp;
 
   //double dNf, dPf;
   double lambda; // 插值调节因子
@@ -367,7 +368,7 @@ BuildMomentumMatrix (double dt)
 
       app = 0.0; // 离散化方程的系数
 
-      n = 0; // 记录每个单元的界面数
+      n = 0; // 记录每个单元的非边界界面数
 
       /*  计算单元速度梯度
          gradup = Gradient (&xu, &xuf, LOGICAL_TRUE, element);
@@ -385,7 +386,7 @@ BuildMomentumMatrix (double dt)
 	  pair = faces[face].pair;
 
 	  if (pair != -1) // 非边界界面
-	    {
+	  {
 
 	      neighbor = faces[pair].element; // 相邻单元的编号
 
@@ -430,7 +431,7 @@ BuildMomentumMatrix (double dt)
 	      apn[n] += -viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp;
 
 	      ani[n] = neighbor; // 存储相邻单元的编号
-	      n++;
+	      n++; // 统计单元的非边界界面数
 
 	      /*  计算非正交修正项，归入源项, 扩散项中界面面心速度梯度grad(Uf) ——产生—— 非正交修正项
 	       * 单元P miu*Af/|df| * dot[grad(Up), rpl - rp]
@@ -460,9 +461,9 @@ BuildMomentumMatrix (double dt)
 	         }
 	       */
 
-	    }
+	  }
 	  else // 边界界面
-	    {
+	  {
 
 	      if (faces[face].bc != EMPTY)
 		{
@@ -531,7 +532,7 @@ BuildMomentumMatrix (double dt)
 
 		}
 
-	    }
+	  }
 
 	}
 
@@ -585,15 +586,15 @@ BuildMomentumMatrix (double dt)
 	  exit (LOGICAL_ERROR);
 	}
 
-      V_SetCmp (&ap, element + 1, app); // 设置计算的参数 ap
+      V_SetCmp (&ap, element + 1, app); // 存储半离散动量方程的参数 amp
 
-      Q_SetLen (&Am, element + 1, n + 1); // 设置 Am 矩阵的规格
+      Q_SetLen (&Am, element + 1, n + 1); // Am矩阵每行里系数的数目
 
       Q_SetEntry (&Am, element + 1, 0, element + 1, app); // 将单元的app值放入矩阵Am的对角位置
 
       for (j = 0; j < n; j++)
 	{
-	  Q_SetEntry (&Am, element + 1, j + 1, ani[j] + 1, apn[j]); // 将apn[j] 的值放入Am 的其他位置
+	  Q_SetEntry (&Am, element + 1, j + 1, ani[j] + 1, apn[j]); // 将apn[j]的值放入Am的对应位置
 	}
 
       // 设置bu向量对应单元处的值
@@ -666,7 +667,7 @@ CalculateVelocity (char *var, int *fiter, double dt, double maxCp,  // 求解流
 	{
 	  printf ("\nWarning: Momentum matrix is not diagonal dominant\n");
 
-	  // 将矩阵 Am 向量 bu bv bw写入文件中
+	  // 若不是，则将矩阵 Am 向量 bu bv bw写入文件中
 	  WriteMatrix (&Am, LOGICAL_FALSE);
 	  WriteVector (&bu);
 	  WriteVector (&bv);
@@ -691,7 +692,7 @@ CalculateVelocity (char *var, int *fiter, double dt, double maxCp,  // 求解流
           printf("\nMatrix %c Number of iterations: %d Residual: %+E Time: %+E\n",
                  var[iu], miter, mres, mtime);
 
-      // 矩阵求解结束的残差大于设定的终止残差 或 求解达到最大迭代次数
+      // 矩阵求解结束的残差大于设定的终止残差 或 求解达到最大迭代次数 , 保证本次迭代求解是有效的
       if ((mres > parameter.mtol[iu] && miter == parameter.miter[iu])
             || LASResult () != LASOK) // 线性代数运算的结果标志
       {
