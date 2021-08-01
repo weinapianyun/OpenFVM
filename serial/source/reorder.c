@@ -32,117 +32,117 @@ void
 ReorderMesh (char *path)
 {
 
-  int i, j, n;
+    int i, j, n;
 
-  int element, neighbor, face, pair;
+    int element, neighbor, face, pair;
 
-  int freeAdj;
+    int freeAdj;
 
-  signed char *mask;
-  int *deg;
+    signed char *mask;
+    int *deg;
 
-  int *xadj;
-  int *adjncy;
+    int *xadj;
+    int *adjncy;
 
-  int *perm;
+    int *perm;
 
-  msh_element *newelements;
+    msh_element *newelements;
 
-  char *file;
+    char *file;
 
-  printf ("\nReordering mesh ...\n");
+    printf ("\nReordering mesh ...\n");
 
-  xadj = calloc (nbelements + 1, sizeof (int));
+    xadj = calloc (nbelements + 1, sizeof (int));
 
-  n = 0;
+    n = 0;
 
-  for (i = 0; i < nbfaces; i++)
+    for (i = 0; i < nbfaces; i++)
     {
 
-      face = i;
+        face = i;
 
-      pair = faces[face].pair;
+        pair = faces[face].pair;
 
-      if (pair != -1)
-	{
-	  n++;
-	}
+        if (pair != -1)
+        {
+            n++;
+        }
     }
 
-  adjncy = calloc (n, sizeof (int));
+    adjncy = calloc (n, sizeof (int));
 
-  freeAdj = 0;
+    freeAdj = 0;
 
-  for (i = 0; i < nbelements; i++)
+    for (i = 0; i < nbelements; i++)
     {
 
-      element = i;
+        element = i;
 
-      xadj[element] = freeAdj;
+        xadj[element] = freeAdj;
 
-      for (j = 0; j < elements[element].nbfaces; j++)
-	{
+        for (j = 0; j < elements[element].nbfaces; j++)
+        {
 
-	  face = elements[element].face[j];
+            face = elements[element].face[j];
 
-	  pair = faces[face].pair;
+            pair = faces[face].pair;
 
-	  if (pair != -1)
-	    {
+            if (pair != -1)
+            {
 
-	      neighbor = faces[pair].element;
+                neighbor = faces[pair].element;
 
-	      adjncy[freeAdj++] = neighbor;
+                adjncy[freeAdj++] = neighbor;
 
-	    }
-	}
+            }
+        }
     }
 
-  xadj[nbelements] = freeAdj;
+    xadj[nbelements] = freeAdj;
 
-  perm = calloc (nbelements, sizeof (int));
-  mask = calloc (nbelements, sizeof (signed char));
-  deg = calloc (nbelements, sizeof (int));
+    perm = calloc (nbelements, sizeof (int));
+    mask = calloc (nbelements, sizeof (signed char));
+    deg = calloc (nbelements, sizeof (int));
 
-  genrcmi (nbelements, 0, xadj, adjncy, perm, mask, deg);
+    genrcmi (nbelements, 0, xadj, adjncy, perm, mask, deg);
 
-  file = calloc (strlen (path) + 9, sizeof (char));
+    file = calloc (strlen (path) + 9, sizeof (char));
 
-  // Create indexes
+    // Create indexes
 
-  newelements = calloc (nbelements, sizeof (msh_element));
+    newelements = calloc (nbelements, sizeof (msh_element));
 
-  for (i = 0; i < nbelements; i++)
+    for (i = 0; i < nbelements; i++)
     {
-      element = i;
+        element = i;
 
-      newelements[element] = elements[perm[element]];
+        newelements[element] = elements[perm[element]];
 
-      newelements[element].index = i;
+        newelements[element].index = i;
 
     }
 
-  for (i = 0; i < nbelements; i++)
+    for (i = 0; i < nbelements; i++)
     {
-      element = i;
+        element = i;
 
-      elements[element] = newelements[element];
+        elements[element] = newelements[element];
     }
 
-  // Export mesh file
+    // Export mesh file
 
-  sprintf (file, "%s.msh", path);
+    sprintf (file, "%s.msh", path);
 
-  MshExportMSH (file);
+    MshExportMSH (file);
 
-  free (file);
+    free (file);
 
-  free (newelements);
+    free (newelements);
 
-  free (xadj);
-  free (adjncy);
-  free (perm);
-  free (mask);
-  free (deg);
+    free (xadj);
+    free (adjncy);
+    free (perm);
+    free (mask);
+    free (deg);
 
 }

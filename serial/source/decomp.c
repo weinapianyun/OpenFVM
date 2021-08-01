@@ -29,242 +29,216 @@
 #include "decomp.h"
 
 void
-DecomposeMesh (char *path, int nbregions)
-{
+DecomposeMesh(char *path, int nbregions) {
 
-  int i, j, l, m, n;
+    int i, j, l, m, n;
+    int nx, ny;
+    double dxmin, dxmax, dymin, dymax;
 
-  int nx, ny;
-  double dxmin, dxmax, dymin, dymax;
+    int element, neighbor, face, pair;
 
-  int element, neighbor, face, pair;
+    int freeAdj;
 
-  int freeAdj;
+    int newindex;
 
-  int newindex;
+    int *xadj;
+    int *adjncy;
 
-  int *xadj;
-  int *adjncy;
+    char *file;
 
-  char *file;
+    // No weight information provided
+    int wgtFlag = 0;
 
-  // No weight information provided
-  int wgtFlag = 0;
+    // C style numbering
+    int numFlag = 0;
 
-  // C style numbering
-  int numFlag = 0;
+    // Decomposition options. options[0] = 0 - use defaults
+    int options[5];
 
-  // Decomposition options. options[0] = 0 - use defaults
-  int options[5];
+    // Processor weights
+    float *weights;
 
-  // Processor weights
-  float *weights;
+    // Final decomposition
+    int *decomp;
 
-  // Final decomposition
-  int *decomp;
+    // Number of edges cut
+    int edgeCut = 0;
 
-  // Number of edges cut
-  int edgeCut = 0;
+    printf("\nDecomposing mesh into %d regions...\n", nbregions);
 
-  printf ("\nDecomposing mesh into %d regions...\n", nbregions);
+    xadj = calloc(nbelements + 1, sizeof(int));
 
-  xadj = calloc (nbelements + 1, sizeof (int));
+    n = 0;
 
-  n = 0;
+    for (i = 0; i < nbfaces; i++) {
 
-  for (i = 0; i < nbfaces; i++)
-    {
+        face = i;
 
-      face = i;
+        pair = faces[face].pair;
 
-      pair = faces[face].pair;
-
-      if (pair != -1)
-	{
-	  n++;
-	}
+        if (pair != -1) {
+            n++;
+        }
     }
 
-  adjncy = calloc (n, sizeof (int));
+    adjncy = calloc(n, sizeof(int));
 
-  freeAdj = 0;
+    freeAdj = 0;
 
-  for (i = 0; i < nbelements; i++)
-    {
+    for (i = 0; i < nbelements; i++) {
 
-      element = i;
+        element = i;
 
-      xadj[element] = freeAdj;
+        xadj[element] = freeAdj;
 
-      for (j = 0; j < elements[element].nbfaces; j++)
-	{
+        for (j = 0; j < elements[element].nbfaces; j++) {
 
-	  face = elements[element].face[j];
+            face = elements[element].face[j];
 
-	  pair = faces[face].pair;
+            pair = faces[face].pair;
 
-	  if (pair != -1)
-	    {
+            if (pair != -1) {
 
-	      neighbor = faces[pair].element;
+                neighbor = faces[pair].element;
 
-	      adjncy[freeAdj++] = neighbor;
+                adjncy[freeAdj++] = neighbor;
 
-	    }
-	}
+            }
+        }
     }
 
-  xadj[nbelements] = freeAdj;
+    xadj[nbelements] = freeAdj;
 
-  // Use even weighting
-  weights = calloc (nbregions, sizeof (float));
+    // Use even weighting
+    weights = calloc(nbregions, sizeof(float));
 
-  for (j = 0; j < nbregions; j++)
-    {
-      weights[j] = 1.0 / (float) nbregions;
+    for (j = 0; j < nbregions; j++) {
+        weights[j] = 1.0 / (float) nbregions;
     }
 
-  decomp = calloc (nbelements, sizeof (int));
+    decomp = calloc(nbelements, sizeof(int));
 
-  if (1 == 1)
-    {
+    if (1 == 1) {
 
 #ifndef WIN32
 
-      // Decompose mesh
-      if (nbregions > 8)
-	{
-	  options[0] = 1;
-	  options[1] = 2;
-	  options[2] = 1;
-	  options[3] = 3;
-	  options[4] = 0;
-	  METIS_WPartGraphKway (&nbelements, xadj, adjncy, 3, 0, &wgtFlag,
-				&numFlag, &nbregions, weights, options,
-				&edgeCut, decomp);
-	}
-      else
-	{
-	  if (nbregions > 1)
-	    {
-	      options[0] = 1;
-	      options[1] = 2;
-	      options[2] = 1;
-	      options[3] = 1;
-	      options[4] = 0;
-	      METIS_WPartGraphRecursive (&nbelements, xadj, adjncy, 3, 0,
-					 &wgtFlag, &numFlag, &nbregions,
-					 weights, options, &edgeCut, decomp);
-	    }
-	  else
-	    {
-	      for (i = 0; i < nbelements; i++)
-		{
-		  element = i;
+        // Decompose mesh
+        if (nbregions > 8) {
+            options[0] = 1;
+            options[1] = 2;
+            options[2] = 1;
+            options[3] = 3;
+            options[4] = 0;
+            METIS_WPartGraphKway(&nbelements, xadj, adjncy, 3, 0, &wgtFlag,
+                                 &numFlag, &nbregions, weights, options,
+                                 &edgeCut, decomp);
+        } else {
+            if (nbregions > 1) {
+                options[0] = 1;
+                options[1] = 2;
+                options[2] = 1;
+                options[3] = 1;
+                options[4] = 0;
+                METIS_WPartGraphRecursive(&nbelements, xadj, adjncy, 3, 0,
+                                          &wgtFlag, &numFlag, &nbregions,
+                                          weights, options, &edgeCut, decomp);
+            } else {
+                for (i = 0; i < nbelements; i++) {
+                    element = i;
 
-		  decomp[element] = 0;
-		}
-	    }
-	}
+                    decomp[element] = 0;
+                }
+            }
+        }
 #endif
 
-    }
-  else
-    {
+    } else {
 
-      // Decompose grid
-      nx = sqrt (nbregions);
-      ny = sqrt (nbregions);
+        // Decompose grid
+        nx = sqrt(nbregions);
+        ny = sqrt(nbregions);
 
-      for (i = 0; i < nbelements; i++)
-	{
+        for (i = 0; i < nbelements; i++) {
 
-	  element = i;
+            element = i;
 
-	  for (l = 0; l < nx; l++)
-	    {
+            for (l = 0; l < nx; l++) {
 
-	      dxmin = (float) (l + 0) / (float) nx;
-	      dxmax = (float) (l + 1) / (float) nx;
+                dxmin = (float) (l + 0) / (float) nx;
+                dxmax = (float) (l + 1) / (float) nx;
 
-	      if (elements[element].celement.x < dxmin
-		  || elements[element].celement.x > dxmax)
-		continue;
+                if (elements[element].celement.x < dxmin
+                    || elements[element].celement.x > dxmax)
+                    continue;
 
-	      for (m = 0; m < ny; m++)
-		{
+                for (m = 0; m < ny; m++) {
 
-		  dymin = (float) (m + 0) / (float) ny;
-		  dymax = (float) (m + 1) / (float) ny;
+                    dymin = (float) (m + 0) / (float) ny;
+                    dymax = (float) (m + 1) / (float) ny;
 
-		  if (elements[element].celement.y < dymin
-		      || elements[element].celement.y > dymax)
-		    continue;
+                    if (elements[element].celement.y < dymin
+                        || elements[element].celement.y > dymax)
+                        continue;
 
-		  decomp[element] = l * nx + m;
+                    decomp[element] = l * nx + m;
 
-		  //printf("l * nx + m: %d \n", l * nx + m);
+                    //printf("l * nx + m: %d \n", l * nx + m);
 
-		}
+                }
 
-	    }
+            }
 
-	}
+        }
 
-      edgeCut = nx * ny;
+        edgeCut = nx * ny;
 
     }
 
-  for (i = 0; i < nbelements; i++)
-    {
-      element = i;
+    for (i = 0; i < nbelements; i++) {
+        element = i;
 
-      elements[element].elemreg = decomp[element];
+        elements[element].elemreg = decomp[element];
     }
 
-  // Create new indexes PETSc style
-  newindex = 0;
+    // Create new indexes PETSc style
+    newindex = 0;
 
-  for (j = 0; j < nbregions; j++)
-    {
+    for (j = 0; j < nbregions; j++) {
 
-      for (i = 0; i < nbelements; i++)
-	{
-	  element = i;
+        for (i = 0; i < nbelements; i++) {
+            element = i;
 
-	  if (elements[element].elemreg == j)
-	    {
-	      elements[element].index = newindex;
-	      newindex++;
-	    }
-	}
+            if (elements[element].elemreg == j) {
+                elements[element].index = newindex;
+                newindex++;
+            }
+        }
 
     }
 
-  // Export mesh files
-  file = calloc (strlen (path) + 9, sizeof (char));
+    // Export mesh files
+    file = calloc(strlen(path) + 9, sizeof(char));
 
-  sprintf (file, "%s.ppp.msh", path);
+    sprintf(file, "%s.ppp.msh", path);
 
-  MshExportMSH (file);
+    MshExportMSH(file);
 
-  if (edgeCut == 0)
-    printf ("\nWarning: No cuts were made\n");
+    if (edgeCut == 0)
+        printf("\nWarning: No cuts were made\n");
 
-  for (j = 0; j < nbregions; j++)
-    {
-      sprintf (file, "%s.%03d.msh", path, j);
+    for (j = 0; j < nbregions; j++) {
+        sprintf(file, "%s.%03d.msh", path, j);
 
-      MshExportDecomposedMSH (file, j, nbregions);
+        MshExportDecomposedMSH(file, j, nbregions);
     }
 
-  printf ("Done.\n\n");
+    printf("Done.\n\n");
 
-  free (file);
+    free(file);
 
-  free (xadj);
-  free (adjncy);
-  free (weights);
-  free (decomp);
+    free(xadj);
+    free(adjncy);
+    free(weights);
+    free(decomp);
 
 }

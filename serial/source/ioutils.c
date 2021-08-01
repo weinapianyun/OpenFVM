@@ -21,50 +21,31 @@
 #include <stdio.h>
 
 void
-GetLine (FILE * fp)
+GetLine (FILE * fp) // 从文件中读取一行字符串
 {
-
-  char one_char;
-
-  one_char = fgetc (fp); // 从流 fp 获取下一个字符
-
-  do
-    {
-      one_char = fgetc (fp);
-
-    }
-  while (!feof (fp) && one_char != 10); // 直到读取到最后一个字符，或者换行符
-
+    char one_char;
+    one_char = fgetc (fp); // 从流 fp 获取下一个字符
+    // 直到读取到最后一个字符，或者换行符
+    do{
+        one_char = fgetc (fp);
+    } while (!feof (fp) && one_char != 10);
 }
 
 
 void
-GetString (FILE * fp, char string[256])
+GetString (FILE * fp, char string[256]) // 从文件中读取一个字符串
 {
-
-  int i;
-
-  char one_char;
-
-  i = 0;
-
-  do
-    {
-      one_char = fgetc (fp);
-
-      if (one_char == 10)
-	break;
-
-      string[i] = (char) one_char;
-
-      i++;
-
-      if (i >= 512)
-	break;
-
-    }
-  while (!feof (fp));
-
-  string[i] = '\0';
-
+    int i;
+    char one_char;
+    i = 0;
+    do{
+        one_char = fgetc (fp);
+        if (one_char == 10)
+            break;
+        string[i] = (char) one_char;
+        i++;
+        if (i >= 512)
+            break;
+    } while (!feof (fp));
+    string[i] = '\0';
 }

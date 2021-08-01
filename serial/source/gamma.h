@@ -20,4 +20,5 @@
 
 
 // 计算单元的相函数
-void CalculateGamma (char *var, int *fiter, double dt, double *maxCp, int verbose, int pchecks);
+void CalculateGamma (char *var, int *fiter, double dt,
+                     double *maxCp, int verbose, int pchecks);

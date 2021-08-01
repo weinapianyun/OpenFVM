@@ -62,44 +62,43 @@ int main(int argc, char *argv[])
 /* gettok() could solve that problem. TRY to use gettok().            */
 
 int
-nextchar ()
+nextchar () // 读取下一个字符串
 {
-  ++ctp;
-  while (*ctp == ' ')
     ++ctp;
-  return *ctp;
+    while (*ctp == ' ')
+        ++ctp;
+    return *ctp;
 }
 
-
 int
-eatspace ()
+eatspace () // 吃掉 连续的空格
 {
-  while (*ctp == ' ')
-    ++ctp;
-  return *ctp;
+    while (*ctp == ' ')
+        ++ctp;
+    return *ctp;
 }
 
 int
 calcu ()
 {
-  FILE *ifil;
-  char *line;
-  int rpos;
-  double r;
+    FILE *ifil;
+    char *line;
+    int rpos;
+    double r;
 
-  line = calloc (MAXL, sizeof (char));
+    line = calloc (MAXL, sizeof (char));
 
-  ifil = stdin;
-  while (1)
+    ifil = stdin;
+    while (1)
     {
-      errorp = NULL;
-      printf ("Calc:");
+        errorp = NULL;
+        printf ("Calc:");
 
-      if (!fgets (line, MAXL, ifil))
-	break;
+        if (!fgets (line, MAXL, ifil))
+            break;
 
 #ifdef WIN32
-      if (strlen (line) && strnicmp (line, "QUIT", 4)
+        if (strlen (line) && strnicmp (line, "QUIT", 4)
 	  && stricmp (line, "Q\n"))
 	rpos = evaluate (line, &r);
       else
@@ -107,242 +106,240 @@ calcu ()
 #endif
 
 #ifndef WIN32
-      if (strlen (line) && strncasecmp (line, "QUIT", 4)
-	  && strcasecmp (line, "Q\n"))
-	rpos = evaluate (line, &r);
-      else
-	break;
+        if (strlen (line) &&  // 比较字符串的前n个字符, 自动忽略大小写差异
+            strncasecmp (line, "QUIT", 4) && strcasecmp (line, "Q\n"))
+            rpos = evaluate (line, &r);
+        else
+            break;
 #endif
 
-      if (!rpos)
-	{
-	  printf ("%-18g\n", r);
-	  oldval = r;
-	}
-      else
-	{			/* prints Error in field min. 12 wide */
-	  printf ("%*s\n", rpos, "^Error");
-	}
+        if (!rpos)
+        {
+            printf ("%-18g\n", r);
+            oldval = r;
+        }
+        else
+        {
+            /* prints Error in field min. 12 wide */
+            printf ("%*s\n", rpos, "^Error");
+        }
     }
 
-  free (line);
+    free (line);
 
-  return rpos;			/* if interactive rpos should always be 0 */
+    return rpos;		/* if interactive rpos should always be 0 */
 }
 
 int
 evaluate (char *s, double *r)
 {
-  ctp = s;
-  eatspace ();
-  *r = expression ();
-  eatspace ();
-  if (*ctp == '\n' && !errorp)
-    return (0);
-  else
-    return (ctp - s) + 11;
+    ctp = s;
+    eatspace ();
+    *r = expression ();
+    eatspace ();
+    if (*ctp == '\n' && !errorp)
+        return (0);
+    else
+        return (ctp - s) + 11;
 }
 
 
 double
 expression ()
 {
-  double e;
-  int opera2;
+    double e;
+    int opera2;
 
-  /* printf("test arg:%s\n",ctp); */
-
-  e = product ();
-  while ((opera2 = *ctp) == '+' || opera2 == '-')
+    /* printf("test arg:%s\n",ctp); */
+    e = product ();
+    while ((opera2 = *ctp) == '+' || opera2 == '-')
     {
-      nextchar ();
-      if (opera2 == '+')
-	e += product ();
-      else
-	e -= product ();
+        nextchar ();
+        if (opera2 == '+')
+            e += product ();
+        else
+            e -= product ();
     }
-  eatspace ();
-  return e;
+    eatspace ();
+    return e;
 }
 
 
 double
 product ()
 {
-  double dp;
-  int ope;
+    double dp;
+    int ope;
 
-  dp = potens ();
-  while ((ope = *ctp) == '*' || ope == '/')
+    dp = potens ();
+    while ((ope = *ctp) == '*' || ope == '/')
     {
-      nextchar ();
-      if (ope == '*')
-	dp *= potens ();
-      else
-	dp /= potens ();
+        nextchar ();
+        if (ope == '*')
+            dp *= potens ();
+        else
+            dp /= potens ();
     }
-  eatspace ();
-  return dp;
+    eatspace ();
+    return dp;
 }
 
 
 double
 potens ()
 {
-  double dpo;
+    double dpo;
 
-  dpo = signedfactor ();
-  while (*ctp == '^')
+    dpo = signedfactor ();
+    while (*ctp == '^')
     {
-      nextchar ();
-      dpo = exp (log (dpo) * signedfactor ());
+        nextchar ();
+        dpo = exp (log (dpo) * signedfactor ());
     }
-  eatspace ();
-  return dpo;
+    eatspace ();
+    return dpo;
 }
 
 
 double
 signedfactor ()
 {
-  double ds;
-  if (*ctp == '-')
+    double ds;
+    if (*ctp == '-')
     {
-      nextchar ();
-      ds = -factor ();
+        nextchar ();
+        ds = -factor ();
     }
-  else
-    ds = factor ();
-  eatspace ();
-  return ds;
+    else
+        ds = factor ();
+    eatspace ();
+    return ds;
 }
 
 
 double
 factor ()
 {
-  double df;
+    double df;
 
-  /* while (*ctp!='\n') {
-     putchar(*ctp++);
-     } 
-   */
+    /* while (*ctp!='\n') {
+       putchar(*ctp++);
+       }
+     */
 
-  switch (*ctp)
+    switch (*ctp)
     {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-      df = strtod (ctp, &ctp);
-      break;
-    case '(':
-      nextchar ();
-      df = expression ();
-      if (*ctp == ')')
-	nextchar ();
-      else
-	errorp = ctp;
-      break;
-    case 'M':
-      nextchar ();
-      df = oldval;
-      break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            df = strtod (ctp, &ctp);
+            break;
+        case '(':
+            nextchar ();
+            df = expression ();
+            if (*ctp == ')')
+                nextchar ();
+            else
+                errorp = ctp;
+            break;
+        case 'M':
+            nextchar ();
+            df = oldval;
+            break;
 
-    case 'x':
-      nextchar ();
-      df = cx;
-      break;
+        case 'x':
+            nextchar ();
+            df = cx;
+            break;
 
-    case 'y':
-      nextchar ();
-      df = cy;
-      break;
+        case 'y':
+            nextchar ();
+            df = cy;
+            break;
 
-    case 'z':
-      nextchar ();
-      df = cz;
-      break;
+        case 'z':
+            nextchar ();
+            df = cz;
+            break;
 
-    default:
-      df = stdfunc ();
+        default:
+            df = stdfunc ();
     }
-  /* printf("ddt: df = %lf, *ctp = %c\n",df,*ctp); */
+    /* printf("ddt: df = %lf, *ctp = %c\n",df,*ctp); */
 
-  eatspace ();
-  return df;
+    eatspace ();
+    return df;
 }
 
 
 char *functionname[] = {
-  "abs", "sqrt", "sin", "cos", "atan", "log", "exp", "\0"
+        "abs", "sqrt", "sin", "cos", "atan", "log", "exp", "\0"
 };
 
 double
 stdfunc ()
 {
-  double dsf;
-  char **fnptr;
-  int jj;
+    double dsf;
+    char **fnptr;
+    int jj;
 
-  eatspace ();
-  jj = 0;
-  fnptr = functionname;
-  while (**fnptr)
+    eatspace ();
+    jj = 0;
+    fnptr = functionname;
+    while (**fnptr)
     {
-      /* printf("%s\n",*fnptr); */
-
-      if (strncmp (*fnptr, ctp, strlen (*fnptr)) == 0)
-	break;
-
-      ++fnptr;
-      ++jj;
+        /* printf("%s\n",*fnptr); */
+        if (strncmp (*fnptr, ctp, strlen (*fnptr)) == 0)
+            break;
+        ++fnptr;
+        ++jj;
     }
-  if (!**fnptr)
+    if (!**fnptr)
     {
-      errorp = ctp;
-      return 1;
+        errorp = ctp;
+        return 1;
     }
-  ctp += (strlen (*fnptr) - 1);
-  nextchar ();
-  dsf = factor ();
-  switch (jj)
+    ctp += (strlen (*fnptr) - 1);
+    nextchar ();
+    dsf = factor ();
+    switch (jj)
     {
-    case 0:
-      dsf = fabs (dsf);
-      break;
-    case 1:
-      dsf = sqrt (dsf);
-      break;
-    case 2:
-      dsf = sin (dsf);
-      break;
-    case 3:
-      dsf = cos (dsf);
-      break;
-    case 4:
-      dsf = atan (dsf);
-      break;
-    case 5:
-      dsf = log (dsf);
-      break;
-    case 6:
-      dsf = exp (dsf);
-      break;
-    default:
-      {
-	errorp = ctp;
-	return 4;
-      }
+        case 0:
+            dsf = fabs (dsf);
+            break;
+        case 1:
+            dsf = sqrt (dsf);
+            break;
+        case 2:
+            dsf = sin (dsf);
+            break;
+        case 3:
+            dsf = cos (dsf);
+            break;
+        case 4:
+            dsf = atan (dsf);
+            break;
+        case 5:
+            dsf = log (dsf);
+            break;
+        case 6:
+            dsf = exp (dsf);
+            break;
+        default:
+        {
+            errorp = ctp;
+            return 4;
+        }
     }
-  eatspace ();
-  return dsf;
+    eatspace ();
+    return dsf;
 }
 
 

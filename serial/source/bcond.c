@@ -28,625 +28,543 @@
 #include "bcond.h"
 
 void
-GetEntrySurface (FILE * fp, int j)
-{
+GetEntrySurface(FILE *fp, int j) {
 
-  int ival;
+    int ival;
 
-  gs = calloc (MAXL, sizeof (char));
+    gs = calloc(MAXL, sizeof(char));
 
-  fscanf (fp, "%d", &ival); // 从流 fp 中读取格式化输入
-  bcsurfaces[nbbcsurfaces + j].physreg = ival;
+    fscanf(fp, "%d", &ival); // 从流 fp 中读取格式化输入
+    bcsurfaces[nbbcsurfaces + j].physreg = ival;
 
-  fscanf (fp, "%s", gs);
-  bcsurfaces[nbbcsurfaces + j].fu = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcsurfaces[nbbcsurfaces + j].fu, gs);
+    fscanf(fp, "%s", gs);
+    bcsurfaces[nbbcsurfaces + j].fu = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcsurfaces[nbbcsurfaces + j].fu, gs);
 
-  fscanf (fp, "%s", gs);
-  bcsurfaces[nbbcsurfaces + j].fv = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcsurfaces[nbbcsurfaces + j].fv, gs);
+    fscanf(fp, "%s", gs);
+    bcsurfaces[nbbcsurfaces + j].fv = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcsurfaces[nbbcsurfaces + j].fv, gs);
 
-  fscanf (fp, "%s", gs);
-  bcsurfaces[nbbcsurfaces + j].fw = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcsurfaces[nbbcsurfaces + j].fw, gs);
+    fscanf(fp, "%s", gs);
+    bcsurfaces[nbbcsurfaces + j].fw = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcsurfaces[nbbcsurfaces + j].fw, gs);
 
-  fscanf (fp, "%s", gs);
-  bcsurfaces[nbbcsurfaces + j].fp = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcsurfaces[nbbcsurfaces + j].fp, gs);
+    fscanf(fp, "%s", gs);
+    bcsurfaces[nbbcsurfaces + j].fp = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcsurfaces[nbbcsurfaces + j].fp, gs);
 
-  fscanf (fp, "%s", gs);
-  bcsurfaces[nbbcsurfaces + j].fT = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcsurfaces[nbbcsurfaces + j].fT, gs);
+    fscanf(fp, "%s", gs);
+    bcsurfaces[nbbcsurfaces + j].fT = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcsurfaces[nbbcsurfaces + j].fT, gs);
 
-  fscanf (fp, "%s", gs);
-  bcsurfaces[nbbcsurfaces + j].fs = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcsurfaces[nbbcsurfaces + j].fs, gs);
+    fscanf(fp, "%s", gs);
+    bcsurfaces[nbbcsurfaces + j].fs = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcsurfaces[nbbcsurfaces + j].fs, gs);
 
-  printf ("\n");
-  printf ("Surface: %d, fu: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
-	  bcsurfaces[nbbcsurfaces + j].fu);
-  printf ("Surface: %d, fv: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
-	  bcsurfaces[nbbcsurfaces + j].fv);
-  printf ("Surface: %d, fw: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
-	  bcsurfaces[nbbcsurfaces + j].fw);
-  printf ("Surface: %d, fp: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
-	  bcsurfaces[nbbcsurfaces + j].fp);
-  printf ("Surface: %d, fT: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
-	  bcsurfaces[nbbcsurfaces + j].fT);
-  printf ("Surface: %d, fs: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
-	  bcsurfaces[nbbcsurfaces + j].fs);
+    printf("\n");
+    printf("Surface: %d, fu: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
+           bcsurfaces[nbbcsurfaces + j].fu);
+    printf("Surface: %d, fv: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
+           bcsurfaces[nbbcsurfaces + j].fv);
+    printf("Surface: %d, fw: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
+           bcsurfaces[nbbcsurfaces + j].fw);
+    printf("Surface: %d, fp: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
+           bcsurfaces[nbbcsurfaces + j].fp);
+    printf("Surface: %d, fT: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
+           bcsurfaces[nbbcsurfaces + j].fT);
+    printf("Surface: %d, fs: %s\n", bcsurfaces[nbbcsurfaces + j].physreg,
+           bcsurfaces[nbbcsurfaces + j].fs);
 
-  free (gs);
+    free(gs);
 
 }
 
 void
-GetEntryVolume (FILE * fp, int j)
-{
+GetEntryVolume(FILE *fp, int j) {
 
-  int ival;
+    int ival;
 
-  gs = calloc (MAXL, sizeof (char));
+    gs = calloc(MAXL, sizeof(char));
 
-  fscanf (fp, "%d", &ival);
-  bcvolumes[nbbcvolumes + j].physreg = ival;
+    fscanf(fp, "%d", &ival);
+    bcvolumes[nbbcvolumes + j].physreg = ival;
 
-  fscanf (fp, "%s", gs);
-  bcvolumes[nbbcvolumes + j].fu = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcvolumes[nbbcvolumes + j].fu, gs);
+    fscanf(fp, "%s", gs);
+    bcvolumes[nbbcvolumes + j].fu = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcvolumes[nbbcvolumes + j].fu, gs);
 
-  fscanf (fp, "%s", gs);
-  bcvolumes[nbbcvolumes + j].fv = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcvolumes[nbbcvolumes + j].fv, gs);
+    fscanf(fp, "%s", gs);
+    bcvolumes[nbbcvolumes + j].fv = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcvolumes[nbbcvolumes + j].fv, gs);
 
-  fscanf (fp, "%s", gs);
-  bcvolumes[nbbcvolumes + j].fw = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcvolumes[nbbcvolumes + j].fw, gs);
+    fscanf(fp, "%s", gs);
+    bcvolumes[nbbcvolumes + j].fw = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcvolumes[nbbcvolumes + j].fw, gs);
 
-  fscanf (fp, "%s", gs);
-  bcvolumes[nbbcvolumes + j].fp = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcvolumes[nbbcvolumes + j].fp, gs);
+    fscanf(fp, "%s", gs);
+    bcvolumes[nbbcvolumes + j].fp = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcvolumes[nbbcvolumes + j].fp, gs);
 
-  fscanf (fp, "%s", gs);
-  bcvolumes[nbbcvolumes + j].fT = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcvolumes[nbbcvolumes + j].fT, gs);
+    fscanf(fp, "%s", gs);
+    bcvolumes[nbbcvolumes + j].fT = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcvolumes[nbbcvolumes + j].fT, gs);
 
-  fscanf (fp, "%s", gs);
-  bcvolumes[nbbcvolumes + j].fs = calloc (strlen (gs) + 1, sizeof (char));
-  strcpy (bcvolumes[nbbcvolumes + j].fs, gs);
+    fscanf(fp, "%s", gs);
+    bcvolumes[nbbcvolumes + j].fs = calloc(strlen(gs) + 1, sizeof(char));
+    strcpy(bcvolumes[nbbcvolumes + j].fs, gs);
 
-  printf ("\n");
-  printf ("Volume: %d, fu: %s\n", bcvolumes[nbbcvolumes + j].physreg,
-	  bcvolumes[nbbcvolumes + j].fu);
-  printf ("Volume: %d, fv: %s\n", bcvolumes[nbbcvolumes + j].physreg,
-	  bcvolumes[nbbcvolumes + j].fv);
-  printf ("Volume: %d, fw: %s\n", bcvolumes[nbbcvolumes + j].physreg,
-	  bcvolumes[nbbcvolumes + j].fw);
-  printf ("Volume: %d, fp: %s\n", bcvolumes[nbbcvolumes + j].physreg,
-	  bcvolumes[nbbcvolumes + j].fp);
-  printf ("Volume: %d, fT: %s\n", bcvolumes[nbbcvolumes + j].physreg,
-	  bcvolumes[nbbcvolumes + j].fT);
-  printf ("Volume: %d, fs: %s\n", bcvolumes[nbbcvolumes + j].physreg,
-	  bcvolumes[nbbcvolumes + j].fs);
+    printf("\n");
+    printf("Volume: %d, fu: %s\n", bcvolumes[nbbcvolumes + j].physreg,
+           bcvolumes[nbbcvolumes + j].fu);
+    printf("Volume: %d, fv: %s\n", bcvolumes[nbbcvolumes + j].physreg,
+           bcvolumes[nbbcvolumes + j].fv);
+    printf("Volume: %d, fw: %s\n", bcvolumes[nbbcvolumes + j].physreg,
+           bcvolumes[nbbcvolumes + j].fw);
+    printf("Volume: %d, fp: %s\n", bcvolumes[nbbcvolumes + j].physreg,
+           bcvolumes[nbbcvolumes + j].fp);
+    printf("Volume: %d, fT: %s\n", bcvolumes[nbbcvolumes + j].physreg,
+           bcvolumes[nbbcvolumes + j].fT);
+    printf("Volume: %d, fs: %s\n", bcvolumes[nbbcvolumes + j].physreg,
+           bcvolumes[nbbcvolumes + j].fs);
 
-  free (gs);
+    free(gs);
 
 }
 
 int
-BcdImportBCD (char *file)
-{
+BcdImportBCD(char *file) {
 
-  int i, j, n;
+    int i, j, n;
+    int inull;
+    int tcode;
+    int nbbcd;
 
-  int inull;
+    FILE *fp;
+    char descr[512];
 
-  int tcode;
-  int nbbcd;
+    fp = fopen(file, "r");
 
-  FILE *fp;
-  char descr[512];
-
-  fp = fopen (file, "r");
-
-  if (fp == NULL)
-    {
-      printf ("\nError: Boundary conditions file not found!\n");
-      printf ("%s\n\n", file);
-      exit (LOGICAL_ERROR);
+    if (fp == NULL) {
+        printf("\nError: Boundary conditions file not found!\n");
+        printf("%s\n\n", file);
+        exit(LOGICAL_ERROR);
     }
 
-  nbbcsurfaces = 0;
-  nbbcvolumes = 0;
+    nbbcsurfaces = 0;
+    nbbcvolumes = 0;
+
+    printf("\nReading boundary conditions file: %s ...\n", file);
+
+    do {
+        do {
+            fscanf(fp, "%s", descr);
+
+            if (strcmp(descr, "$Boundary") == 0)
+                break;
+
+            if (strcmp(descr, "$EndFile") == 0)
+                break;
+        } while (!feof(fp));
+
+        if (strcmp(descr, "$EndFile") == 0)
+            break;
+
+        if (strcmp(descr, "$Boundary") == 0) {
+            fscanf(fp, "%d %d ", &inull, &nbbcd);
+            GetLine(fp);
+
+            for (i = 0; i < nbbcd; i++) {
+                fscanf(fp, "%d %d", &tcode, &n);
+                GetLine(fp);
+
+                switch (tcode) {
+                    case 10000:
+                        // Empty - physical surfaces
+                        bcsurfaces = realloc(bcsurfaces, (nbbcsurfaces + n)
+                                                         * sizeof(bcd_surface));
+
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = EMPTY;
+                            GetEntrySurface(fp, j);
+                        }
+                        nbbcsurfaces += n;
+                        break;
 
-  printf ("\nReading boundary conditions file: %s ...\n", file);
+                    case 10020:
+                        // Cyclic - physical surfaces
+                        bcsurfaces = realloc(bcsurfaces, (nbbcsurfaces + n)
+                                                         * sizeof(bcd_surface));
 
-  do
-    {
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = CYCLIC;
+                            GetEntrySurface(fp, j);
+                        }
 
-      do
-	{
-	  fscanf (fp, "%s", descr);
+                        nbbcsurfaces += n;
+                        break;
 
-	  if (strcmp (descr, "$Boundary") == 0)
-	    break;
+                    case 10040:
+                        // Permeable - physical surfaces
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-	  if (strcmp (descr, "$EndFile") == 0)
-	    break;
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = PERMEABLE;
+                            GetEntrySurface(fp, j);
+                        }
+                        nbbcsurfaces += n;
+                        break;
 
-	}
-      while (!feof (fp));
+                    case 10050:
+                        // Open - physical surfaces
+                        bcsurfaces = realloc(bcsurfaces, (nbbcsurfaces + n)
+                                                         * sizeof(bcd_surface));
 
-      if (strcmp (descr, "$EndFile") == 0)
-	break;
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = OPEN;
+                            GetEntrySurface(fp, j);
+                        }
+                        nbbcsurfaces += n;
+                        break;
 
-      if (strcmp (descr, "$Boundary") == 0)
-	{
+                    case 10100:
+                        // Inlet - physical surfaces
+                        bcsurfaces = realloc(bcsurfaces, (nbbcsurfaces + n)
+                                                         * sizeof(bcd_surface));
 
-	  fscanf (fp, "%d %d ", &inull, &nbbcd);
-	  GetLine (fp);
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = INLET;
+                            GetEntrySurface(fp, j);
+                        }
+                        nbbcsurfaces += n;
+                        break;
 
-	  for (i = 0; i < nbbcd; i++)
-	    {
+                    case 10110:
+                        // Pressure inlet - physical surfaces
+                        bcsurfaces = realloc(bcsurfaces, (nbbcsurfaces + n)
+                                                         * sizeof(bcd_surface));
 
-	      fscanf (fp, "%d %d", &tcode, &n);
-	      GetLine (fp);
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = PRESSUREINLET;
+                            GetEntrySurface(fp, j);
+                        }
+                        nbbcsurfaces += n;
+                        break;
 
-	      switch (tcode)
-		{
-		case 10000:
+                    case 10150:
+                        //  Outlet - physical surfaces
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  // Empty - physical surfaces
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = OUTLET;
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                            GetEntrySurface(fp, j);
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcsurfaces[nbbcsurfaces + j].bc = EMPTY;
+                        }
 
-		      GetEntrySurface (fp, j);
+                        nbbcsurfaces += n;
 
-		    }
+                        break;
 
-		  nbbcsurfaces += n;
+                    case 10160:
 
-		  break;
+                        //  Slip - physical surfaces
 
-		case 10020:
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  // Cyclic - physical surfaces
+                        for (j = 0; j < n; j++) {
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                            bcsurfaces[nbbcsurfaces + j].bc = SLIP;
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcsurfaces[nbbcsurfaces + j].bc = CYCLIC;
+                            GetEntrySurface(fp, j);
 
-		      GetEntrySurface (fp, j);
+                        }
 
-		    }
+                        nbbcsurfaces += n;
 
-		  nbbcsurfaces += n;
+                        break;
 
-		  break;
+                    case 10170:
 
-		case 10040:
+                        //  Wall - physical surfaces
 
-		  // Permeable - physical surfaces
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        for (j = 0; j < n; j++) {
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcsurfaces[nbbcsurfaces + j].bc = PERMEABLE;
+                            bcsurfaces[nbbcsurfaces + j].bc = WALL;
 
-		      GetEntrySurface (fp, j);
+                            GetEntrySurface(fp, j);
 
-		    }
+                        }
 
-		  nbbcsurfaces += n;
+                        nbbcsurfaces += n;
 
-		  break;
+                        break;
 
-		case 10050:
+                    case 10180:
 
-		  // Open - physical surfaces
+                        //  Adiabtic wall - physical surfaces
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcsurfaces[nbbcsurfaces + j].bc = OPEN;
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = ADIABATICWALL;
 
-		      GetEntrySurface (fp, j);
+                            GetEntrySurface(fp, j);
 
-		    }
+                        }
 
-		  nbbcsurfaces += n;
+                        nbbcsurfaces += n;
 
-		  break;
+                        break;
 
-		case 10100:
+                    case 10190:
 
-		  // Inlet - physical surfaces
+                        //  Moving wall - physical surfaces
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  for (j = 0; j < n; j++)
-		    {
+                        for (j = 0; j < n; j++) {
 
-		      bcsurfaces[nbbcsurfaces + j].bc = INLET;
+                            bcsurfaces[nbbcsurfaces + j].bc = MOVINGWALL;
 
-		      GetEntrySurface (fp, j);
+                            GetEntrySurface(fp, j);
 
-		    }
+                        }
 
-		  nbbcsurfaces += n;
+                        nbbcsurfaces += n;
 
-		  break;
+                        break;
 
-		case 10110:
+                    case 10200:
 
-		  // Pressure inlet - physical surfaces
+                        // Boundary conditions - physical surfaces
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  for (j = 0; j < n; j++)
-		    {
+                        for (j = 0; j < n; j++) {
 
-		      bcsurfaces[nbbcsurfaces + j].bc = PRESSUREINLET;
+                            bcsurfaces[nbbcsurfaces + j].bc = SURFACE;
 
-		      GetEntrySurface (fp, j);
+                            GetEntrySurface(fp, j);
 
-		    }
+                        }
 
-		  nbbcsurfaces += n;
+                        nbbcsurfaces += n;
 
-		  break;
+                        break;
 
-		case 10150:
+                    case 10250:
 
-		  //  Outlet - physical surfaces
+                        // Initial conditions - physical volumes
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        bcvolumes =
+                                realloc(bcvolumes,
+                                        (nbbcvolumes + n) * sizeof(bcd_volume));
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcsurfaces[nbbcsurfaces + j].bc = OUTLET;
+                        for (j = 0; j < n; j++) {
+                            bcvolumes[nbbcvolumes + j].bc = VOLUME;
 
-		      GetEntrySurface (fp, j);
+                            GetEntryVolume(fp, j);
+                        }
 
-		    }
+                        nbbcvolumes += n;
 
-		  nbbcsurfaces += n;
+                        break;
 
-		  break;
+                    case 11000:
 
-		case 10160:
+                        // Empty - physical surfaces
 
-		  //  Slip - physical surfaces
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        for (j = 0; j < n; j++) {
+                            bcsurfaces[nbbcsurfaces + j].bc = EMPTY;
 
-		  for (j = 0; j < n; j++)
-		    {
+                            GetEntrySurface(fp, j);
 
-		      bcsurfaces[nbbcsurfaces + j].bc = SLIP;
+                        }
 
-		      GetEntrySurface (fp, j);
+                        nbbcsurfaces += n;
 
-		    }
+                        break;
 
-		  nbbcsurfaces += n;
+                    case 11040:
 
-		  break;
+                        //  Constraint - physical surfaces
 
-		case 10170:
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  //  Wall - physical surfaces
+                        for (j = 0; j < n; j++) {
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                            bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINT;
 
-		  for (j = 0; j < n; j++)
-		    {
+                            GetEntrySurface(fp, j);
 
-		      bcsurfaces[nbbcsurfaces + j].bc = WALL;
+                        }
 
-		      GetEntrySurface (fp, j);
+                        nbbcsurfaces += n;
 
-		    }
+                        break;
 
-		  nbbcsurfaces += n;
+                    case 11050:
 
-		  break;
+                        //  Constraint u - physical surfaces
 
-		case 10180:
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  //  Adiabtic wall - physical surfaces
+                        for (j = 0; j < n; j++) {
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                            bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINTU;
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcsurfaces[nbbcsurfaces + j].bc = ADIABATICWALL;
+                            GetEntrySurface(fp, j);
 
-		      GetEntrySurface (fp, j);
+                        }
 
-		    }
+                        nbbcsurfaces += n;
 
-		  nbbcsurfaces += n;
+                        break;
 
-		  break;
+                    case 11060:
 
-		case 10190:
+                        //  Constraint v - physical surfaces
 
-		  //  Moving wall - physical surfaces
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        for (j = 0; j < n; j++) {
 
-		  for (j = 0; j < n; j++)
-		    {
+                            bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINTV;
 
-		      bcsurfaces[nbbcsurfaces + j].bc = MOVINGWALL;
+                            GetEntrySurface(fp, j);
 
-		      GetEntrySurface (fp, j);
+                        }
 
-		    }
+                        nbbcsurfaces += n;
 
-		  nbbcsurfaces += n;
+                        break;
 
-		  break;
+                    case 11070:
 
-		case 10200:
+                        //  Constraint w - physical surfaces
 
-		  // Boundary conditions - physical surfaces
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        for (j = 0; j < n; j++) {
 
-		  for (j = 0; j < n; j++)
-		    {
+                            bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINTW;
 
-		      bcsurfaces[nbbcsurfaces + j].bc = SURFACE;
+                            GetEntrySurface(fp, j);
 
-		      GetEntrySurface (fp, j);
+                        }
 
-		    }
+                        nbbcsurfaces += n;
 
-		  nbbcsurfaces += n;
+                        break;
 
-		  break;
+                    case 11080:
 
-		case 10250:
+                        //  Pressure - physical surfaces
 
-		  // Initial conditions - physical volumes
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		  bcvolumes =
-		    realloc (bcvolumes,
-			     (nbbcvolumes + n) * sizeof (bcd_volume));
+                        for (j = 0; j < n; j++) {
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcvolumes[nbbcvolumes + j].bc = VOLUME;
+                            bcsurfaces[nbbcsurfaces + j].bc = PRESSURE;
 
-		      GetEntryVolume (fp, j);
-		    }
+                            GetEntrySurface(fp, j);
 
-		  nbbcvolumes += n;
+                        }
 
-		  break;
+                        nbbcsurfaces += n;
 
-		case 11000:
+                        break;
 
-		  // Empty - physical surfaces
+                    case 11200:
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                        // Boundary conditions - physical surfaces
 
-		  for (j = 0; j < n; j++)
-		    {
-		      bcsurfaces[nbbcsurfaces + j].bc = EMPTY;
+                        bcsurfaces =
+                                realloc(bcsurfaces,
+                                        (nbbcsurfaces + n) * sizeof(bcd_surface));
 
-		      GetEntrySurface (fp, j);
+                        for (j = 0; j < n; j++) {
 
-		    }
+                            bcsurfaces[nbbcsurfaces + j].bc = SURFACE;
 
-		  nbbcsurfaces += n;
+                            GetEntrySurface(fp, j);
 
-		  break;
+                        }
 
-		case 11040:
+                        nbbcsurfaces += n;
 
-		  //  Constraint - physical surfaces
+                        break;
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                    case 11250:
 
-		  for (j = 0; j < n; j++)
-		    {
+                        // Initial conditions - physical volumes
 
-		      bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINT;
+                        bcvolumes =
+                                realloc(bcvolumes,
+                                        (nbbcvolumes + n) * sizeof(bcd_volume));
 
-		      GetEntrySurface (fp, j);
+                        for (j = 0; j < n; j++) {
+                            bcvolumes[nbbcvolumes + j].bc = VOLUME;
 
-		    }
+                            GetEntryVolume(fp, j);
+                        }
 
-		  nbbcsurfaces += n;
+                        nbbcvolumes += n;
 
-		  break;
+                        break;
 
-		case 11050:
+                    default:
 
-		  //  Constraint u - physical surfaces
+                        printf("\nError: Unknown boundary code (%d).\n", tcode);
+                        exit(LOGICAL_ERROR);
+                        break;
 
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
+                }
 
-		  for (j = 0; j < n; j++)
-		    {
+            }
 
-		      bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINTU;
+        }
 
-		      GetEntrySurface (fp, j);
+    } while (!feof(fp));
 
-		    }
+    fclose(fp);
 
-		  nbbcsurfaces += n;
+    printf("\n");
+    printf("Number of boundary conditions: \t\t\t%d\n", nbbcsurfaces);
+    printf("Number of initial conditions: \t\t\t%d\n", nbbcvolumes);
 
-		  break;
+    printf("Done.\n");
 
-		case 11060:
-
-		  //  Constraint v - physical surfaces
-
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
-
-		  for (j = 0; j < n; j++)
-		    {
-
-		      bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINTV;
-
-		      GetEntrySurface (fp, j);
-
-		    }
-
-		  nbbcsurfaces += n;
-
-		  break;
-
-		case 11070:
-
-		  //  Constraint w - physical surfaces
-
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
-
-		  for (j = 0; j < n; j++)
-		    {
-
-		      bcsurfaces[nbbcsurfaces + j].bc = CONSTRAINTW;
-
-		      GetEntrySurface (fp, j);
-
-		    }
-
-		  nbbcsurfaces += n;
-
-		  break;
-
-		case 11080:
-
-		  //  Pressure - physical surfaces
-
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
-
-		  for (j = 0; j < n; j++)
-		    {
-
-		      bcsurfaces[nbbcsurfaces + j].bc = PRESSURE;
-
-		      GetEntrySurface (fp, j);
-
-		    }
-
-		  nbbcsurfaces += n;
-
-		  break;
-
-		case 11200:
-
-		  // Boundary conditions - physical surfaces
-
-		  bcsurfaces =
-		    realloc (bcsurfaces,
-			     (nbbcsurfaces + n) * sizeof (bcd_surface));
-
-		  for (j = 0; j < n; j++)
-		    {
-
-		      bcsurfaces[nbbcsurfaces + j].bc = SURFACE;
-
-		      GetEntrySurface (fp, j);
-
-		    }
-
-		  nbbcsurfaces += n;
-
-		  break;
-
-		case 11250:
-
-		  // Initial conditions - physical volumes
-
-		  bcvolumes =
-		    realloc (bcvolumes,
-			     (nbbcvolumes + n) * sizeof (bcd_volume));
-
-		  for (j = 0; j < n; j++)
-		    {
-		      bcvolumes[nbbcvolumes + j].bc = VOLUME;
-
-		      GetEntryVolume (fp, j);
-		    }
-
-		  nbbcvolumes += n;
-
-		  break;
-
-		default:
-
-		  printf ("\nError: Unknown boundary code (%d).\n", tcode);
-		  exit (LOGICAL_ERROR);
-		  break;
-
-		}
-
-	    }
-
-	}
-
-    }
-  while (!feof (fp));
-
-  fclose (fp);
-
-  printf ("\n");
-  printf ("Number of boundary conditions: \t\t\t%d\n", nbbcsurfaces);
-  printf ("Number of initial conditions: \t\t\t%d\n", nbbcvolumes);
-
-  printf ("Done.\n");
-
-  return LOGICAL_TRUE;
+    return LOGICAL_TRUE;
 
 }

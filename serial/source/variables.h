@@ -26,7 +26,7 @@ Vector uf; // Uf，单元界面上的速度矢量
 Vector dens, visc, thcond, spheat; // 密度、粘度、热导率、比热
 
 // A X = b
-Vector xu0, xv0, xw0, xp0, xT0, xs0; // 解向量各项的上一迭代步的 单元中心值
+Vector xu0, xv0, xw0, xp0, xT0, xs0; // 解向量各项的上一时间步的 单元中心值
 Vector xu, xv, xw, xp, xT, xs; // 解向量各项的当前迭代步 单元中心值
 Vector xuf, xvf, xwf, xpf, xTf, xsf; // 解向量各项的当前迭代步 单元界面值
 

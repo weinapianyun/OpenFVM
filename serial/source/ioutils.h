@@ -18,5 +18,5 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-void GetLine (FILE * fp);
-void GetString (FILE * fp, char string[256]);
+void GetLine (FILE * fp); // 从文件中读取一行字符串
+void GetString (FILE * fp, char string[256]); // 从文件中读取一个字符串

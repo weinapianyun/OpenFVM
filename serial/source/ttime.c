@@ -29,27 +29,27 @@ double
 ttime (void) // 以秒为单位返回系统时间
 {
 
-  double sec;
+    double sec;
 
 #ifdef WIN32
 
-  sec = GetCurrentTime () * 0.001;
+    sec = GetCurrentTime () * 0.001;
 
 #else
 
-  struct timeval now;
+    struct timeval now;
 
-  // Get the system time.
-  if (gettimeofday (&now, (struct timezone *) 0))
+    // Get the system time.
+    if (gettimeofday (&now, (struct timezone *) 0))
     {
-      return (0);
+        return (0);
     }
 
-  //Return time in seconds.  
-  sec = (double) now.tv_sec + (((double) now.tv_usec) / 1000000.0);
+    //Return time in seconds.
+    sec = (double) now.tv_sec + (((double) now.tv_usec) / 1000000.0);
 
 #endif
 
-  return (sec);
+    return (sec);
 
 }

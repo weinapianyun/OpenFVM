@@ -21,43 +21,40 @@
 typedef struct
 {
 
-  float cpsi;
+    float cpsi; // 绝对压力
 
 } mat_psi;
 
 typedef struct
 {
-
-  float cdens;
+    float cdens;// 密度
 
 } mat_dens;
 
 typedef struct
 {
 
-  float cvisc;
+    float cvisc; // 粘度
 
 } mat_visc;
 
 typedef struct
 {
-
-  float cspheat;
-  float cthcond;
+    float cspheat; // 比热容
+    float cthcond; // 热导率
 
 } mat_therm;
 
 typedef struct
 {
-
-  float celastmod;
-  float cpoisson;
+    float celastmod; // 弹性模量
+    float cpoisson; // 泊松比
 
 } mat_mech;
 
 typedef struct
 {
-
+  // 便于设置初始时已充填的流场, 两相流动
   mat_psi psi[2];
   mat_dens dens[2];
   mat_visc visc[2];
@@ -65,7 +62,7 @@ typedef struct
   mat_mech mech[2];
 
   float tens;
-  float bthcond;
+  float bthcond; // 边界的热导率
 
 } mat_material;
 

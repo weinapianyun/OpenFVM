@@ -28,76 +28,55 @@
 #include "fill.h"
 
 double
-VolumeTotal ()
+VolumeTotal () // 计算流场的总体积
 {
+    int i;
+    int element;
+    double vol; // 流场的总体积
 
-  int i;
-
-  int element;
-
-  double vol;
-
-  vol = 0.0;
-
-  for (i = 0; i < nbelements; i++)
+    vol = 0.0; // 初始化
+    for (i = 0; i < nbelements; i++) // 遍历所有网格单元
     {
-      element = i;
-
-      vol += elements[element].Vp;
+        element = i;
+        vol += elements[element].Vp;
     }
-
-  return vol;
-
+    return vol;
 }
 
 double
-VolumeFilled ()
+VolumeFilled () // 计算流场已经充填的体积
 {
 
-  int i;
+    int i;
+    int element;
+    double vol; // 流场已经充填的总体积
 
-  int element;
-
-  double vol;
-
-  vol = 0.0;
-
-  for (i = 0; i < nbelements; i++)
+    vol = 0.0; // 初始化
+    for (i = 0; i < nbelements; i++) // 遍历所有网格单元
     {
-      element = i;
-
-      vol += V_GetCmp (&xs, element + 1) * elements[element].Vp;
+        element = i;
+        // vol = F * Vp , F 为单元的相函数
+        vol += V_GetCmp (&xs, element + 1) * elements[element].Vp;
     }
-
-  return vol;
-
+    return vol;
 }
 
 double
-VolumeEntered (double dt)
+VolumeEntered (double dt) // 计算一个时间步中, 浇口注入的总体积
 {
+    int i;
+    int face;
+    double vol; // 一个时间步dt中, 从浇口中注入流体的总体积
 
-  int i;
-
-  int face;
-
-  double vol;
-
-  vol = 0.0;
-
-  for (i = 0; i < nbfaces; i++)
+    vol = 0.0;
+    for (i = 0; i < nbfaces; i++) // 遍历所有界面
     {
-
-      face = i;
-
-      if (faces[face].bc == INLET)
-	{
-	  vol += -V_GetCmp (&uf, face + 1) * faces[face].Aj * dt;
-	}
-
+        face = i;
+        if (faces[face].bc == INLET) // 寻找浇口界面
+        {
+            // vol = uf * Aj *dt
+            vol += -V_GetCmp (&uf, face + 1) * faces[face].Aj * dt;
+        }
     }
-
-  return vol;
-
-
+    return vol;
 }

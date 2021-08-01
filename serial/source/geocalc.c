@@ -28,11 +28,9 @@ double
 GeoMagVector (msh_vector n1)
 {
 
-  double mag;
-
-  mag = sqrt (n1.x * n1.x + n1.y * n1.y + n1.z * n1.z);
-
-  return mag;
+    double mag;
+    mag = sqrt (n1.x * n1.x + n1.y * n1.y + n1.z * n1.z);
+    return mag;
 
 }
 
@@ -40,13 +38,13 @@ msh_vector
 GeoAddVectorVector (msh_vector n2, msh_vector n1)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = n2.x + n1.x;
-  rv.y = n2.y + n1.y;
-  rv.z = n2.z + n1.z;
+    rv.x = n2.x + n1.x;
+    rv.y = n2.y + n1.y;
+    rv.z = n2.z + n1.z;
 
-  return rv;
+    return rv;
 
 }
 
@@ -54,13 +52,13 @@ msh_vector
 GeoSubVectorVector (msh_vector n2, msh_vector n1)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = n2.x - n1.x;
-  rv.y = n2.y - n1.y;
-  rv.z = n2.z - n1.z;
+    rv.x = n2.x - n1.x;
+    rv.y = n2.y - n1.y;
+    rv.z = n2.z - n1.z;
 
-  return rv;
+    return rv;
 
 }
 
@@ -68,13 +66,13 @@ msh_vector
 GeoMultVectorVector (msh_vector n2, msh_vector n1)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = n2.x * n1.x;
-  rv.y = n2.y * n1.y;
-  rv.z = n2.z * n1.z;
+    rv.x = n2.x * n1.x;
+    rv.y = n2.y * n1.y;
+    rv.z = n2.z * n1.z;
 
-  return rv;
+    return rv;
 
 }
 
@@ -82,13 +80,13 @@ msh_vector
 GeoDivVectorVector (msh_vector n2, msh_vector n1)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = n2.x / n1.x;
-  rv.y = n2.y / n1.y;
-  rv.z = n2.z / n1.z;
+    rv.x = n2.x / n1.x;
+    rv.y = n2.y / n1.y;
+    rv.z = n2.z / n1.z;
 
-  return rv;
+    return rv;
 
 }
 
@@ -96,13 +94,13 @@ msh_vector
 GeoMultScalarVector (double s, msh_vector n1)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = s * n1.x;
-  rv.y = s * n1.y;
-  rv.z = s * n1.z;
+    rv.x = s * n1.x;
+    rv.y = s * n1.y;
+    rv.z = s * n1.z;
 
-  return rv;
+    return rv;
 
 }
 
@@ -110,11 +108,11 @@ double
 GeoDotVectorVector (msh_vector n2, msh_vector n1)
 {
 
-  double dot;
+    double dot;
 
-  dot = n2.x * n1.x + n2.y * n1.y + n2.z * n1.z;
+    dot = n2.x * n1.x + n2.y * n1.y + n2.z * n1.z;
 
-  return dot;
+    return dot;
 
 }
 
@@ -122,13 +120,13 @@ msh_vector
 GeoCrossVector (msh_vector v1, msh_vector v2)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = v1.y * v2.z - v1.z * v2.y;
-  rv.y = v1.z * v2.x - v1.x * v2.z;
-  rv.z = v1.x * v2.y - v1.y * v2.x;
+    rv.x = v1.y * v2.z - v1.z * v2.y;
+    rv.y = v1.z * v2.x - v1.x * v2.z;
+    rv.z = v1.x * v2.y - v1.y * v2.x;
 
-  return rv;
+    return rv;
 
 }
 
@@ -136,34 +134,34 @@ msh_vector
 GeoNormalizeVector (msh_vector v1)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  double length;
-  double factor;
-  double min_normal_length;
+    double length;
+    double factor;
+    double min_normal_length;
 
-  rv = v1;
+    rv = v1;
 
-  length = GeoMagVector (v1);
+    length = GeoMagVector (v1);
 
-  min_normal_length = 0.000000000001f;
+    min_normal_length = 0.000000000001f;
 
-  if (length < min_normal_length)
+    if (length < min_normal_length)
     {
-      rv.x = 1.0;
-      rv.y = 0.0;
-      rv.z = 0.0;
+        rv.x = 1.0;
+        rv.y = 0.0;
+        rv.z = 0.0;
 
-      return rv;
+        return rv;
     }
 
-  factor = 1.0 / length;
+    factor = 1.0 / length;
 
-  rv.x *= factor;
-  rv.y *= factor;
-  rv.z *= factor;
+    rv.x *= factor;
+    rv.y *= factor;
+    rv.z *= factor;
 
-  return rv;
+    return rv;
 
 }
 
@@ -171,38 +169,38 @@ double
 GeoCalcAngle (msh_vector v1, msh_vector v2)
 {
 
-  double angle;
-  double dot;
+    double angle;
+    double dot;
 
-  v1 = GeoNormalizeVector (v1);
-  v2 = GeoNormalizeVector (v2);
+    v1 = GeoNormalizeVector (v1);
+    v2 = GeoNormalizeVector (v2);
 
-  dot = GeoDotVectorVector (v1, v2) / (GeoMagVector (v1) * GeoMagVector (v2));
+    dot = GeoDotVectorVector (v1, v2) / (GeoMagVector (v1) * GeoMagVector (v2));
 
-  if (dot >= 1.0)
-    return 0.0;
+    if (dot >= 1.0)
+        return 0.0;
 
-  if (dot <= -1.0)
-    return PI;
+    if (dot <= -1.0)
+        return PI;
 
-  angle = acos (dot);
+    angle = acos (dot);
 
-  return angle;
+    return angle;
 }
 
 double
 GeoDotProduct (msh_vector v1, msh_vector v2)
 {
 
-  double l1, l2;
-  double ang;
+    double l1, l2;
+    double ang;
 
-  l1 = GeoMagVector (v1);
-  l2 = GeoMagVector (v2);
+    l1 = GeoMagVector (v1);
+    l2 = GeoMagVector (v2);
 
-  ang = GeoCalcAngle (v1, v2);
+    ang = GeoCalcAngle (v1, v2);
 
-  return (l1 * l2 * cos (ang));
+    return (l1 * l2 * cos (ang));
 
 }
 
@@ -210,19 +208,19 @@ msh_vector
 GeoCalcNormal (msh_vector n1, msh_vector n2, msh_vector n3)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  msh_vector v1;
-  msh_vector v2;
+    msh_vector v1;
+    msh_vector v2;
 
-  v1 = GeoSubVectorVector (n2, n1);
-  v2 = GeoSubVectorVector (n3, n1);
+    v1 = GeoSubVectorVector (n2, n1);
+    v2 = GeoSubVectorVector (n3, n1);
 
-  rv = GeoCrossVector (v1, v2);
+    rv = GeoCrossVector (v1, v2);
 
-  rv = GeoNormalizeVector (rv);
+    rv = GeoNormalizeVector (rv);
 
-  return rv;
+    return rv;
 
 }
 
@@ -230,13 +228,13 @@ msh_vector
 GeoCalcCentroid2 (msh_vector n1, msh_vector n2)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = (n1.x + n2.x) / 2.0f;
-  rv.y = (n1.y + n2.y) / 2.0f;
-  rv.z = (n1.z + n2.z) / 2.0f;
+    rv.x = (n1.x + n2.x) / 2.0f;
+    rv.y = (n1.y + n2.y) / 2.0f;
+    rv.z = (n1.z + n2.z) / 2.0f;
 
-  return rv;
+    return rv;
 
 }
 
@@ -244,13 +242,13 @@ msh_vector
 GeoCalcCentroid3 (msh_vector n1, msh_vector n2, msh_vector n3)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = (n1.x + n2.x + n3.x) / 3.0f;
-  rv.y = (n1.y + n2.y + n3.y) / 3.0f;
-  rv.z = (n1.z + n2.z + n3.z) / 3.0f;
+    rv.x = (n1.x + n2.x + n3.x) / 3.0f;
+    rv.y = (n1.y + n2.y + n3.y) / 3.0f;
+    rv.z = (n1.z + n2.z + n3.z) / 3.0f;
 
-  return rv;
+    return rv;
 
 }
 
@@ -258,43 +256,43 @@ msh_vector
 GeoCalcCentroid4 (msh_vector n1, msh_vector n2, msh_vector n3, msh_vector n4)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = (n1.x + n2.x + n3.x + n4.x) / 4.0f;
-  rv.y = (n1.y + n2.y + n3.y + n4.y) / 4.0f;
-  rv.z = (n1.z + n2.z + n3.z + n4.z) / 4.0f;
+    rv.x = (n1.x + n2.x + n3.x + n4.x) / 4.0f;
+    rv.y = (n1.y + n2.y + n3.y + n4.y) / 4.0f;
+    rv.z = (n1.z + n2.z + n3.z + n4.z) / 4.0f;
 
-  return rv;
+    return rv;
 
 }
 
 msh_vector
 GeoCalcCentroid6 (msh_vector n1, msh_vector n2, msh_vector n3, msh_vector n4,
-		  msh_vector n5, msh_vector n6)
+                  msh_vector n5, msh_vector n6)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = (n1.x + n2.x + n3.x + n4.x + n5.x + n6.x) / 6.0f;
-  rv.y = (n1.y + n2.y + n3.y + n4.y + n5.y + n6.y) / 6.0f;
-  rv.z = (n1.z + n2.z + n3.z + n4.z + n5.z + n6.z) / 6.0f;
+    rv.x = (n1.x + n2.x + n3.x + n4.x + n5.x + n6.x) / 6.0f;
+    rv.y = (n1.y + n2.y + n3.y + n4.y + n5.y + n6.y) / 6.0f;
+    rv.z = (n1.z + n2.z + n3.z + n4.z + n5.z + n6.z) / 6.0f;
 
-  return rv;
+    return rv;
 
 }
 
 msh_vector
 GeoCalcCentroid8 (msh_vector n1, msh_vector n2, msh_vector n3, msh_vector n4,
-		  msh_vector n5, msh_vector n6, msh_vector n7, msh_vector n8)
+                  msh_vector n5, msh_vector n6, msh_vector n7, msh_vector n8)
 {
 
-  msh_vector rv;
+    msh_vector rv;
 
-  rv.x = (n1.x + n2.x + n3.x + n4.x + n5.x + n6.x + n7.x + n8.x) / 8.0f;
-  rv.y = (n1.y + n2.y + n3.y + n4.y + n5.y + n6.y + n7.y + n8.y) / 8.0f;
-  rv.z = (n1.z + n2.z + n3.z + n4.z + n5.z + n6.z + n7.z + n8.z) / 8.0f;
+    rv.x = (n1.x + n2.x + n3.x + n4.x + n5.x + n6.x + n7.x + n8.x) / 8.0f;
+    rv.y = (n1.y + n2.y + n3.y + n4.y + n5.y + n6.y + n7.y + n8.y) / 8.0f;
+    rv.z = (n1.z + n2.z + n3.z + n4.z + n5.z + n6.z + n7.z + n8.z) / 8.0f;
 
-  return rv;
+    return rv;
 
 }
 
@@ -302,117 +300,117 @@ double
 GeoCalcTriArea (msh_vector n1, msh_vector n2, msh_vector n3)
 {
 
-  double area;
+    double area;
 
-  msh_vector c[3];
-  msh_vector normal;
-  msh_vector sum;
+    msh_vector c[3];
+    msh_vector normal;
+    msh_vector sum;
 
-  c[0] = GeoCrossVector (n1, n2);
-  c[1] = GeoCrossVector (n2, n3);
-  c[2] = GeoCrossVector (n3, n1);
+    c[0] = GeoCrossVector (n1, n2);
+    c[1] = GeoCrossVector (n2, n3);
+    c[2] = GeoCrossVector (n3, n1);
 
-  sum.x = c[0].x + c[1].x + c[2].x;
-  sum.y = c[0].y + c[1].y + c[2].y;
-  sum.z = c[0].z + c[1].z + c[2].z;
+    sum.x = c[0].x + c[1].x + c[2].x;
+    sum.y = c[0].y + c[1].y + c[2].y;
+    sum.z = c[0].z + c[1].z + c[2].z;
 
-  normal = GeoCalcNormal (n1, n2, n3);
+    normal = GeoCalcNormal (n1, n2, n3);
 
-  area =
-    (0.5 * LABS (normal.x * sum.x + normal.y * sum.y + normal.z * sum.z));
+    area =
+            (0.5 * LABS (normal.x * sum.x + normal.y * sum.y + normal.z * sum.z));
 
-  return area;
+    return area;
 }
 
 double
 GeoCalcQuadArea (msh_vector n1, msh_vector n2, msh_vector n3, msh_vector n4)
 {
 
-  double area;
+    double area;
 
-  area = 0.0;
+    area = 0.0;
 
-  area += GeoCalcTriArea (n1, n2, n3);
-  area += GeoCalcTriArea (n1, n3, n4);
+    area += GeoCalcTriArea (n1, n2, n3);
+    area += GeoCalcTriArea (n1, n3, n4);
 
-  return area;
+    return area;
 
 }
 
 double
 GeoCalcTetraVolume (msh_vector n1, msh_vector n2, msh_vector n3,
-		    msh_vector n4)
+                    msh_vector n4)
 {
 
-  double volume;
+    double volume;
 
-  volume =
-    LABS ((n2.x - n1.x) * ((n3.y - n1.y) * (n4.z - n1.z) -
-			   (n4.y - n1.y) * (n3.z - n1.z)) - (n3.x -
-							     n1.x) * ((n2.y -
-								       n1.y) *
-								      (n4.z -
-								       n1.z) -
-								      (n4.y -
-								       n1.y) *
-								      (n2.z -
-								       n1.
-								       z)) +
-	  (n4.x - n1.x) * ((n2.y - n1.y) * (n3.z - n1.z) -
-			   (n3.y - n1.y) * (n2.z - n1.z))) / 6.0f;
+    volume =
+            LABS ((n2.x - n1.x) * ((n3.y - n1.y) * (n4.z - n1.z) -
+                                   (n4.y - n1.y) * (n3.z - n1.z)) - (n3.x -
+                                                                     n1.x) * ((n2.y -
+                                                                               n1.y) *
+                                                                              (n4.z -
+                                                                               n1.z) -
+                                                                              (n4.y -
+                                                                               n1.y) *
+                                                                              (n2.z -
+                                                                               n1.
+                                                                                       z)) +
+                  (n4.x - n1.x) * ((n2.y - n1.y) * (n3.z - n1.z) -
+                                   (n3.y - n1.y) * (n2.z - n1.z))) / 6.0f;
 
-  return volume;
+    return volume;
 
 }
 
 double
 GeoCalcHexaVolume (msh_vector n1, msh_vector n2, msh_vector n3, msh_vector n4,
-		   msh_vector n5, msh_vector n6, msh_vector n7, msh_vector n8)
+                   msh_vector n5, msh_vector n6, msh_vector n7, msh_vector n8)
 {
 
-  double volume;
+    double volume;
 
-  msh_vector c;
+    msh_vector c;
 
-  volume = 0.0;
+    volume = 0.0;
 
-  c = GeoCalcCentroid8 (n1, n2, n3, n4, n5, n6, n7, n8);
+    c = GeoCalcCentroid8 (n1, n2, n3, n4, n5, n6, n7, n8);
 
-  volume += GeoCalcTetraVolume (c, n1, n2, n3);
-  volume += GeoCalcTetraVolume (c, n3, n4, n1);
-  volume += GeoCalcTetraVolume (c, n8, n7, n6);
-  volume += GeoCalcTetraVolume (c, n5, n6, n8);
-  volume += GeoCalcTetraVolume (c, n6, n7, n3);
-  volume += GeoCalcTetraVolume (c, n6, n2, n3);
-  volume += GeoCalcTetraVolume (c, n4, n1, n5);
-  volume += GeoCalcTetraVolume (c, n4, n5, n8);
-  volume += GeoCalcTetraVolume (c, n1, n5, n6);
-  volume += GeoCalcTetraVolume (c, n1, n6, n2);
-  volume += GeoCalcTetraVolume (c, n8, n7, n3);
-  volume += GeoCalcTetraVolume (c, n8, n3, n4);
+    volume += GeoCalcTetraVolume (c, n1, n2, n3);
+    volume += GeoCalcTetraVolume (c, n3, n4, n1);
+    volume += GeoCalcTetraVolume (c, n8, n7, n6);
+    volume += GeoCalcTetraVolume (c, n5, n6, n8);
+    volume += GeoCalcTetraVolume (c, n6, n7, n3);
+    volume += GeoCalcTetraVolume (c, n6, n2, n3);
+    volume += GeoCalcTetraVolume (c, n4, n1, n5);
+    volume += GeoCalcTetraVolume (c, n4, n5, n8);
+    volume += GeoCalcTetraVolume (c, n1, n5, n6);
+    volume += GeoCalcTetraVolume (c, n1, n6, n2);
+    volume += GeoCalcTetraVolume (c, n8, n7, n3);
+    volume += GeoCalcTetraVolume (c, n8, n3, n4);
 
-  return volume;
+    return volume;
 
 }
 
 double
 GeoCalcPrismVolume (msh_vector n1, msh_vector n2, msh_vector n3,
-		    msh_vector n4, msh_vector n5, msh_vector n6)
+                    msh_vector n4, msh_vector n5, msh_vector n6)
 {
 
-  double volume;
+    double volume;
 
-  volume = 0.0;
+    volume = 0.0;
 
-  volume += GeoCalcTetraVolume (n1, n2, n3, n6);
-  volume += GeoCalcTetraVolume (n2, n4, n5, n6);
-  volume += GeoCalcTetraVolume (n1, n2, n4, n6);
-  volume += GeoCalcTetraVolume (n1, n2, n3, n4);
-  volume += GeoCalcTetraVolume (n2, n4, n5, n3);
-  volume += GeoCalcTetraVolume (n4, n5, n6, n3);
-  volume *= 0.5;
+    volume += GeoCalcTetraVolume (n1, n2, n3, n6);
+    volume += GeoCalcTetraVolume (n2, n4, n5, n6);
+    volume += GeoCalcTetraVolume (n1, n2, n4, n6);
+    volume += GeoCalcTetraVolume (n1, n2, n3, n4);
+    volume += GeoCalcTetraVolume (n2, n4, n5, n3);
+    volume += GeoCalcTetraVolume (n4, n5, n6, n3);
+    volume *= 0.5;
 
-  return volume;
+    return volume;
 
 }
 
@@ -420,87 +418,87 @@ void
 GeoCalcRotation (msh_vector * v, msh_vector axis, msh_vector v0, double angle)
 {
 
-  double ax, bx, cx;
-  double ay, by, cy;
-  double az, bz, cz;
+    double ax, bx, cx;
+    double ay, by, cy;
+    double az, bz, cz;
 
-  ax = 1 + (1 - cos (angle)) * (axis.x * axis.x - 1);
-  bx = -axis.z * sin (angle) + (1 - cos (angle)) * axis.x * axis.y;
-  cx = axis.y * sin (angle) + (1 - cos (angle)) * axis.x * axis.z;
+    ax = 1 + (1 - cos (angle)) * (axis.x * axis.x - 1);
+    bx = -axis.z * sin (angle) + (1 - cos (angle)) * axis.x * axis.y;
+    cx = axis.y * sin (angle) + (1 - cos (angle)) * axis.x * axis.z;
 
-  ay = axis.z * sin (angle) + (1 - cos (angle)) * axis.x * axis.y;
-  by = 1 + (1 - cos (angle)) * (axis.y * axis.y - 1);
-  cy = -axis.x * sin (angle) + (1 - cos (angle)) * axis.y * axis.z;
+    ay = axis.z * sin (angle) + (1 - cos (angle)) * axis.x * axis.y;
+    by = 1 + (1 - cos (angle)) * (axis.y * axis.y - 1);
+    cy = -axis.x * sin (angle) + (1 - cos (angle)) * axis.y * axis.z;
 
-  az = -axis.y * sin (angle) + (1 - cos (angle)) * axis.x * axis.z;
-  bz = axis.x * sin (angle) + (1 - cos (angle)) * axis.y * axis.z;
-  cz = 1 + (1 - cos (angle)) * (axis.z * axis.z - 1);
+    az = -axis.y * sin (angle) + (1 - cos (angle)) * axis.x * axis.z;
+    bz = axis.x * sin (angle) + (1 - cos (angle)) * axis.y * axis.z;
+    cz = 1 + (1 - cos (angle)) * (axis.z * axis.z - 1);
 
-  v->x = (ax * v0.x + bx * v0.y + cx * v0.z);
-  v->y = (ay * v0.x + by * v0.y + cy * v0.z);
-  v->z = (az * v0.x + bz * v0.y + cz * v0.z);
+    v->x = (ax * v0.x + bx * v0.y + cx * v0.z);
+    v->y = (ay * v0.x + by * v0.y + cy * v0.z);
+    v->z = (az * v0.x + bz * v0.y + cz * v0.z);
 
 
 }
 
 char
 GeoCalcSegSegIntersection (msh_vector a, msh_vector b, msh_vector c,
-			   msh_vector d, msh_vector * p)
+                           msh_vector d, msh_vector * p)
 {
 
-  double s, t;			/* The two parameters of the parametric eqns. */
-  double num, denom;		/* Numerator and denoninator of equations. */
+    double s, t;			/* The two parameters of the parametric eqns. */
+    double num, denom;		/* Numerator and denoninator of equations. */
 
-  char code = '?';		/* Return char characterizing intersection. */
+    char code = '?';		/* Return char characterizing intersection. */
 
-  double C_EPS = 1E-8;
+    double C_EPS = 1E-8;
 
-  denom = a.x * (d.y - c.y) +
-    b.x * (c.y - d.y) + d.x * (b.y - a.y) + c.x * (a.y - b.y);
+    denom = a.x * (d.y - c.y) +
+            b.x * (c.y - d.y) + d.x * (b.y - a.y) + c.x * (a.y - b.y);
 
-  /* If denom is zero, then segments are parallel: handle separately. */
-  if (LABS (denom) < C_EPS)
+    /* If denom is zero, then segments are parallel: handle separately. */
+    if (LABS (denom) < C_EPS)
     {
-      code = '0';
-      return code;
+        code = '0';
+        return code;
     }
 
-  num = a.x * (d.y - c.y) + c.x * (a.y - d.y) + d.x * (c.y - a.y);
+    num = a.x * (d.y - c.y) + c.x * (a.y - d.y) + d.x * (c.y - a.y);
 
-  if (LABS (num) < C_EPS)
+    if (LABS (num) < C_EPS)
     {
-      if ((num > denom) && (num < denom))
-	{
-	  code = 'v';
-	  return code;
-	}
+        if ((num > denom) && (num < denom))
+        {
+            code = 'v';
+            return code;
+        }
     }
 
-  s = num / denom;
+    s = num / denom;
 
-  num = -(a.x * (c.y - b.y) + b.x * (a.y - c.y) + c.x * (b.y - a.y));
+    num = -(a.x * (c.y - b.y) + b.x * (a.y - c.y) + c.x * (b.y - a.y));
 
-  if (LABS (num) < C_EPS)
+    if (LABS (num) < C_EPS)
     {
-      if ((num > denom) && (num < denom))
-	{
-	  code = 'v';
-	  return code;
-	}
+        if ((num > denom) && (num < denom))
+        {
+            code = 'v';
+            return code;
+        }
     }
 
-  t = num / denom;
+    t = num / denom;
 
-  if ((s > C_EPS) && (s < 1 - C_EPS) && (t > C_EPS) && (t < 1 - C_EPS))
-    code = '1';
-  else if ((s < 0) || (s > 1) || (t < 0) || (t > 1))
-    code = '0';
+    if ((s > C_EPS) && (s < 1 - C_EPS) && (t > C_EPS) && (t < 1 - C_EPS))
+        code = '1';
+    else if ((s < 0) || (s > 1) || (t < 0) || (t > 1))
+        code = '0';
 
-  p->x = (a.x + s * (b.x - a.x));
-  p->y = (a.y + s * (b.y - a.y));
-  p->z = 0.0;
+    p->x = (a.x + s * (b.x - a.x));
+    p->y = (a.y + s * (b.y - a.y));
+    p->z = 0.0;
 
-  return code;
+    return code;
 
 }
 

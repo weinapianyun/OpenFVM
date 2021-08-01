@@ -20,4 +20,4 @@
 
 
 void CalculateTemperature (char *var, int *fiter, double dt, double maxCp,
-			   int verbose, int pchecks); // 计算温度场
+			   int verbose, int pchecks); // 求解流场的温度场分布

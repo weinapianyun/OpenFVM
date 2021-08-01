@@ -18,6 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-double VolumeTotal ();
-double VolumeFilled ();
-double VolumeEntered (double dt);
+double VolumeTotal (); // 计算流场的总体积
+double VolumeFilled (); // 计算流场已经充填的体积
+double VolumeEntered (double dt); // 计算一个时间步中, 浇口注入的总体积
