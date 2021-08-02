@@ -203,7 +203,7 @@ GradientN(Vector *phin, Vector *phif, int bound, int element) // 梯度计算的
     return rv;
 }
 
-/*
+
 msh_vector
 GradientX(Vector *phi, Vector *phif, int element, double wf) // 最小二乘法 梯度计算方法
 {
@@ -278,4 +278,3 @@ GradientX(Vector *phi, Vector *phif, int element, double wf) // 最小二乘法 
 
     return rv; // 返回 rv
 }
-*/

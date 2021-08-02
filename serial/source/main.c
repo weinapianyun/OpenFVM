@@ -22,8 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <malloc.h>
-#include <math.h>
-#include <time.h>
+// #include <math.h>
+// #include <time.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -387,7 +387,7 @@ main (int argc, char **argv) // argc为输入文件的数目, argv为指令流/�
     // Simulate
     if (strchr (argv[2], 'f') != NULL) // 模拟执行指令
     {
-        strcpy (path, argv[1]);
+        strcpy(path, argv[1]);
 
         // Read parameter file
         sprintf (file, "%s.par", path);

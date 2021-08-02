@@ -19,5 +19,5 @@
  ***************************************************************************/
 
 
-void CalculateTemperature (char *var, int *fiter, double dt, double maxCp,
+void CalculateTemperature (char *var, int *fiter, double dt,
 			   int verbose, int pchecks); // 求解流场的温度场分布

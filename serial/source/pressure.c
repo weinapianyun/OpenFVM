@@ -36,9 +36,9 @@
 void
 CorrectFaceP () // 修正单元的界面上的压力值
 {
-    unsigned int i, k;
+    unsigned int i;
 
-    unsigned int node; // 节点编号
+    // unsigned int node; // 节点编号
 
     register unsigned int face, pair; // 界面的编号、共面状态
     register unsigned int element, neighbor; // 当前单元、邻接单元的编号
@@ -139,7 +139,7 @@ CorrectFaceP () // 修正单元的界面上的压力值
 }
 
 void
-BuildContinuityMatrix (double dt) // 创建连续性方程的矩阵
+BuildContinuityMatrix () // 创建连续性方程的矩阵
 {
 
     unsigned int i, j, n, nj; // n为单元的非边界界面数目
@@ -359,8 +359,7 @@ BuildContinuityMatrix (double dt) // 创建连续性方程的矩阵
 }
 
 void
-CalculatePressure (char *var, int *fiter, double dt,
-                   double maxCp, int verbose, int pchecks) // 计算压力场
+CalculatePressure (char *var, int *fiter, int verbose, int pchecks) // 计算压力场
 {
     unsigned int i, j;
 
@@ -395,7 +394,7 @@ CalculatePressure (char *var, int *fiter, double dt,
         }
 
         // Build the continuity matrix (mass conservation)
-        BuildContinuityMatrix (dt); // 创建连续性方程的矩阵
+        BuildContinuityMatrix (); // 创建连续性方程的矩阵
 
         if (pchecks == LOGICAL_TRUE) // 开启对计算参数的检查
         {

@@ -19,5 +19,5 @@
  ***************************************************************************/
 
 
-void CalculatePressure (char *var, int *fiter, double dt, double maxCp,
+void CalculatePressure (char *var, int *fiter, double dt,
 			int verbose, int pchecks); // 计算压力场

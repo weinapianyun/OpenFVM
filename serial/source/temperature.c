@@ -36,7 +36,7 @@
 void
 CorrectFaceT () // 修正界面的温度值
 {
-    unsigned int i, j;
+    unsigned int i;
     register unsigned int face, pair; // 界面的编号、共面状态
     register unsigned int element, neighbor; // 当前单元、邻接单元的编号
 
@@ -441,7 +441,7 @@ SolveEnergyExplicit (double dt) // 显式求解 离散化能量守恒方程
 }
 
 void
-CalculateTemperature (char *var, int *fiter, double dt, double maxCp,
+CalculateTemperature (char *var, int *fiter, double dt,
                       int verbose, int pchecks)  // 求解流场的温度场分布
 {
     unsigned int i;
@@ -518,7 +518,7 @@ CalculateTemperature (char *var, int *fiter, double dt, double maxCp,
 
             if (verbose == LOGICAL_TRUE) // 在命令行中打印求解信息(每求解一次能量守恒方程)
                 printf("\nMatrix %c Number of iterations: %d Residual: %+E Time: %+E\n",
-                       var[iT], miter, mres);
+                       var[iT], miter, mres, mtime);
 
             // 矩阵求解结束的残差大于设定的终止残差 或 求解达到最大迭代次数, 保证本次迭代求解是有效的
             if ((mres > parameter.mtol[iT] && miter == parameter.miter[iT])
@@ -540,7 +540,7 @@ CalculateTemperature (char *var, int *fiter, double dt, double maxCp,
         if (verbose == LOGICAL_TRUE) // 将tempc作为第 i 次修正后的非正交误差, 在命令行中打印出来
             printf ("\nNon-orthogonality error %d (energy): %+E\n", i, tempc);
 
-        CorrectFaceT (&xT, &xTf); // 修正界面上的温度值
+        CorrectFaceT (); // 修正界面上的温度值
 
         if (parameter.timemethod[iT] == IMPLICITEULER // 当求解采用隐式格式、延时修正格式时
             || parameter.timemethod[iT] == CRANKNICOLSON)

@@ -118,7 +118,7 @@ DeallocateMemory () // 销毁申请内存
 }
 
 void
-CheckMassConservationError (double dt) // 检查质量守恒的误差
+CheckMassConservationError () // 检查质量守恒的误差
 {
     int i, j;
     int face; // 单元面的编号，
@@ -159,15 +159,14 @@ Solve (char *var, int *fiter, double dt, double *maxCp, int verbose, int pchecks
     V_SetAllCmp (&hv, 0.0);
     V_SetAllCmp (&hw, 0.0);
 
-    CalculateVelocity (var, fiter, dt, *maxCp, verbose, pchecks); // 求解速度场
-    CalculatePressure (var, fiter, dt, *maxCp, verbose, pchecks); // 求解压力场
-    CorrectVelocity (var, fiter, dt, *maxCp, verbose, pchecks); // 修正速度场
+    CalculateVelocity (var, fiter, dt, verbose, pchecks); // 求解速度场
+    CalculatePressure (var, fiter, dt, verbose, pchecks); // 求解压力场
+    CorrectVelocity (); // 修正速度场
 
     if (pchecks == LOGICAL_TRUE) // Check mass conservation
     {
-        CheckMassConservationError (dt); // 检查并打印出 流场单元质量守恒的误差
+        CheckMassConservationError (); // 检查并打印出 流场单元质量守恒的误差
     }
 
-    CalculateTemperature (var, fiter, dt, *maxCp, verbose, pchecks); // 求解温度场
-
+    CalculateTemperature (var, fiter, dt, verbose, pchecks); // 求解温度场
 }
