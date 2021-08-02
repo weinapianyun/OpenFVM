@@ -309,7 +309,7 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
     //msh_vector gradup, gradvp, gradwp;
     //msh_vector gradun, gradvn, gradwn;
     //msh_vector gradvisc;
-    //msh_vector gradp;
+    msh_vector gradp; // 单元P的压力梯度
 
     //double dNf, dPf;
     double lambda; // 插值调节因子

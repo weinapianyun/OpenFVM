@@ -59,7 +59,7 @@ CFLAGS = -I$(SOURCE_DIR) -O2
 
 CC = gcc
 
-EXECUTABLE = ../examples/OpenFVM
+EXECUTABLE = OpenFVM
 
 all: $(SOURCE_OBJ) $(LASPACK_OBJ)
 

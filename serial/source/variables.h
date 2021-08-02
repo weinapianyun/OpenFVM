@@ -25,7 +25,12 @@ Vector uf; // Uf，单元界面上的速度矢量
 
 Vector dens, visc, thcond, spheat; // 密度、粘度、热导率、比热
 
-// Vector perme; // 渗透率
+/*
+Vector perme; // 渗透率
+Vector g, h; // 最小二乘法的矩阵系数
+Vector *mc;
+QMatrix G;
+*/
 
 // A X = b
 Vector xu0, xv0, xw0, xp0, xT0, xs0; // 解向量各项的上一时间步的 单元中心值
