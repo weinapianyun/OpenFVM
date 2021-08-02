@@ -106,10 +106,9 @@ Gradient (Vector * phi, Vector * phif, int bound, int element) // 梯度计算�
     {
         face = elements[element].face[j];
         v1 = V_GetCmp (phi, element + 1) + rv.x * (faces[face].cface.x
-                                                   - elements[element].celement.x) +rv.y * (faces[face].cface.y
-                                                                                            - elements[element].celement.y) +rv.z * (faces[face].cface.z
-                                                                                                                                     - elements[element].celement.z);
-
+                - elements[element].celement.x) +rv.y * (faces[face].cface.y
+                        - elements[element].celement.y) +rv.z * (faces[face].cface.z
+                                - elements[element].celement.z);
         v1min = LMIN(v1min, v1);
         v1max = LMAX(v1max, v1);
 
@@ -212,7 +211,7 @@ GradientX(Vector * phi, Vector * phif, int element ,double wf) // 最小二乘�
 {
     int i, j, k; // 计数
     int neighbor, face, pair; // 节点编号，界面编号，共面的编号
-    double df[3] =0.0; // 界面两侧单元中心的位移矢量
+    double df[3] = {0.0}; // 界面两侧单元中心的位移矢量
 
     msh_vector rv; // 变量的梯度值
 
@@ -233,7 +232,7 @@ GradientX(Vector * phi, Vector * phif, int element ,double wf) // 最小二乘�
     {
         Q_SetLen (&G, j+1, 3);
         for (k = 0; k < 3; k++)
-            Q_SetEntry (&G, j+1, k, k+1, 0.0)
+            Q_SetEntry (&G, j+1, k, k+1, 0.0);
     }
 
     for (i = 0; i < elements[element].nbfaces; i++) // 遍历单元的所有界面

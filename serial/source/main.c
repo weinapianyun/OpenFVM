@@ -179,7 +179,7 @@ Simulation (char *path) // 模拟执行函数
     do
     {
         curtime += dt; // 计算当前时间
-        iter++; // 外迭代次数 +1
+        iter++; // 时间步推进次数 +1
         printf ("\nTime = %.3E\n", curtime); // 打印当前时间
 
         Solve (var, fiter, dt, &maxCp, verbose, pchecks); // 迭代求解流场一个时间步的变化
@@ -191,7 +191,7 @@ Simulation (char *path) // 模拟执行函数
             printf ("\nPercentage filled: %.2f%%\n", pf); // 打印 充型体积百分比
 
             if (pf > parameter.pf) // 若设定的充填百分比已经达到
-                break; // 结束外迭代
+                break; // 结束时间推进
         }
 
         if (parameter.adjdt == LOGICAL_TRUE) // 判断是否启动时间步长调节
@@ -203,7 +203,7 @@ Simulation (char *path) // 模拟执行函数
                 dt *= 1.05; // 修正-增大时间步长
         }
 
-        if (iter >= irestart) // 判断是否到达 设定的重启的迭代次数(时间步数)
+        if (iter >= irestart) // 判断是否到达 设定的重启的时间步数
         {
             // Write restart file 写重启文件
             sprintf (file, "%s.ini", path); // 将字符串 path.ini 放到 file 中
@@ -291,7 +291,7 @@ Simulation (char *path) // 模拟执行函数
                 break;
         }
 
-    } while (dt > 0.0);
+    } while (dt > 0.0); // 时间步大于0时，继续推进
 
     WriteResults (fpresults, LOGICAL_TRUE, LOGICAL_TRUE, curtime); // 将结束时刻的结果写入path.pos文件(gmsh后处理)中
     // Close output files
@@ -310,8 +310,7 @@ Simulation (char *path) // 模拟执行函数
     WriteProbeViews (fpprobe, var, curtime); // 在结束时刻创建探测视图，写入path.prb文件中
     fclose (fpprobe); // 关闭文件
 
-    // Release memory
-    free (file);
+    free (file); // Release memory
     DeallocateMemory (); // 释放内存空间
 
     return LOGICAL_TRUE;
@@ -371,7 +370,7 @@ main (int argc, char **argv) // argc为输入文件的数目, argv为指令流/�
     /* 判断输入的执行命令的特征字符 —— c v f r d  */
 
     if (strchr (argv[2], 'c') != NULL)
-        pchecks = LOGICAL_TRUE; // 将 pchecks 设置为逻辑真
+        pchecks = LOGICAL_TRUE; // 将 pchecks 设置为 逻辑真
     else
         pchecks = LOGICAL_FALSE;
 
@@ -420,34 +419,27 @@ main (int argc, char **argv) // argc为输入文件的数目, argv为指令流/�
     // Decompose
     /*
     if (strchr (argv[2], 'd') != NULL) // 网格分区指令
-      {
-
+    {
         strcpy (path, argv[1]);
 
         // Read mesh file
         sprintf (file, "%s.msh", path);
 
         if (MshImportMSH (file) == LOGICAL_ERROR)
-      {
-        printf ("\nError: Mesh file not found!\n");
-        printf ("%s\n\n", file);
-        return LOGICAL_ERROR;
-      }
+        {
+            printf ("\nError: Mesh file not found!\n");
+            printf ("%s\n\n", file);
+            return LOGICAL_ERROR;
+        }
 
         // Allocate memory
         printf ("\n");
         printf ("Allocating memory...\n");
-
         AllocateMemory ();
-
         printf ("Memory allocated.\n");
-
         SetBoundary ();
-
         DeallocateMemory ();
-
         DecomposeMesh (path, atoi (argv[3]));
-
       }
     */
 
@@ -455,6 +447,7 @@ main (int argc, char **argv) // argc为输入文件的数目, argv为指令流/�
     if (strchr (argv[2], 'r') != NULL) // 网格单元重排序指令
     {
         strcpy (path, argv[1]);
+
         // Read mesh file
         sprintf (file, "%s.msh", path);
         if (MshImportMSH (file) == LOGICAL_ERROR)
@@ -466,9 +459,10 @@ main (int argc, char **argv) // argc为输入文件的数目, argv为指令流/�
         ReorderMesh (path);
     }
 
-    free (path); // 释放内存
+    // 释放内存
+    free (path);
     free (file);
-    MshFreeMemory (); // Free memory
+    MshFreeMemory ();
     printf ("Done.\n\n");
 
     return 0;

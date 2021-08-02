@@ -37,6 +37,7 @@ double
 CalculateMaxCourantNumber (double dt, int interface) // 计算最大柯朗数
 {
     unsigned int i, j;
+
     // 使用cpu内部寄存器的变量，加快变量的读写速度; 一般int把变量放在内存中
     register unsigned int face; // 单元界面编号
     register unsigned int element; // 网格单元编号
@@ -165,7 +166,8 @@ PredictBeta () // 预测 beta 值
 
                         grads = Gradient (&xs, &xsf, LOGICAL_FALSE, donor);
 
-                        dot = grads.x * faces[face].d.x + grads.y * faces[face].d.y + grads.z * faces[face].d.z;
+                        dot = grads.x * faces[face].d.x + grads.y *
+                                faces[face].d.y + grads.z * faces[face].d.z;
                         l1 = GeoMagVector (grads);
                         l2 = GeoMagVector (faces[face].d);
                     }
@@ -176,7 +178,8 @@ PredictBeta () // 预测 beta 值
 
                         grads = Gradient (&xs, &xsf, LOGICAL_FALSE, donor);
 
-                        dot = grads.x * faces[pair].d.x + grads.y * faces[pair].d.y + grads.z * faces[pair].d.z;
+                        dot = grads.x * faces[pair].d.x + grads.y *
+                                faces[pair].d.y + grads.z * faces[pair].d.z;
                         l1 = GeoMagVector (grads);
                         l2 = GeoMagVector (faces[pair].d);
                     }
@@ -186,7 +189,8 @@ PredictBeta () // 预测 beta 值
 
                     if (LABS (V_GetCmp (&xs, acceptor + 1) - su) > SMALL)
                     {
-                        sdn = (V_GetCmp (&xs, donor + 1) - su) / (V_GetCmp (&xs, acceptor + 1) - su);
+                        sdn = (V_GetCmp (&xs, donor + 1) - su) /
+                                (V_GetCmp (&xs, acceptor + 1) - su);
 
                         if (sdn >= 0.0 && sdn <= 1.0 && LABS (Cod) > SMALL)
                             sjnCBC = LMIN (1.0, sdn / Cod);
@@ -194,7 +198,8 @@ PredictBeta () // 预测 beta 值
                             sjnCBC = sdn;
 
                         if (sdn >= 0.0 && sdn <= 1.0)
-                            sjnUQ =  LMIN ((8.0 * Cod * sdn + (1.0 - Cod) * (6.0 * sdn + 3.0)) / 8.0, sjnCBC);
+                            sjnUQ =  LMIN ((8.0 * Cod * sdn + (1.0 - Cod) *
+                                    (6.0 * sdn + 3.0)) / 8.0, sjnCBC);
                         else
                             sjnUQ = sdn;
 
@@ -398,7 +403,6 @@ SmoothScalar (Vector * xm, Vector * x, int n)
     for (i = 0; i < nbelements; i++)
     {
         element = i;
-
         V_SetCmp (xm, element + 1, sm[i]);
     }
     free (sa);
@@ -487,13 +491,14 @@ BuildVolumeOfFluidMatrix (double dt) // 创建 VOF 矩阵
                 n++;
 
                 bip += -0.5 * (1.0 - betaj) * V_GetCmp (&uf, face + 1) *
-                        faces[face].Aj * V_GetCmp (&xs, element + 1);
+                       faces[face].Aj * V_GetCmp (&xs, element + 1);
                 bip += -0.5 * betaj * V_GetCmp (&uf, face + 1) *
-                        faces[face].Aj * V_GetCmp (&xs, neighbor + 1);
+                       faces[face].Aj * V_GetCmp (&xs, neighbor + 1);
             }
             else
             {
-                bip += -1.0 * V_GetCmp (&uf, face + 1) * faces[face].Aj * V_GetCmp (&xsf, face + 1);
+                bip += -1.0 * V_GetCmp (&uf, face + 1) * faces[face].Aj *
+                        V_GetCmp (&xsf, face + 1);
             }
         }
         if (dt > 0.0)
@@ -640,7 +645,8 @@ CalculateGamma (char *var, int *fiter, double dt, double *maxCp, int verbose,
         fiter[is]++;
 
         // Predict beta - CICSAM
-        PredictBeta (&betaf, &xsf, &xs, &Co, &uf);
+        // PredictBeta (&betaf, &xsf, &xs, &Co, &uf);
+        PredictBeta ();
 
         for (j = 0; j <= parameter.ncicsamcor; j++)
         {

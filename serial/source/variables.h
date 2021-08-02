@@ -25,12 +25,15 @@ Vector uf; // Uf，单元界面上的速度矢量
 
 Vector dens, visc, thcond, spheat; // 密度、粘度、热导率、比热
 
+// Vector perme; // 渗透率
+
 // A X = b
 Vector xu0, xv0, xw0, xp0, xT0, xs0; // 解向量各项的上一时间步的 单元中心值
 Vector xu, xv, xw, xp, xT, xs; // 解向量各项的当前迭代步 单元中心值
 Vector xuf, xvf, xwf, xpf, xTf, xsf; // 解向量各项的当前迭代步 单元界面值
 
 QMatrix Am, Ac, Ae, As; // 动量、连续性、能量、VOF 方程的系数矩阵
+
 Vector bu, bv, bw, bp, bT, bs; // 各项的右端向量
 
 Vector hu, hv, hw; // SIMPLE法中的 H 向量
@@ -40,5 +43,6 @@ Vector betaf; // CICSAM格式中的 beta 因子
 
 Vector xpp, xTp;
 //Vector xsm;
+
 
 

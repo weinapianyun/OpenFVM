@@ -99,7 +99,6 @@ CorrectVelocityField() // 修正网格单元中心的速度值
     {
         for (i = 0; i < nbelements; i++) // 遍历网格单元
         {
-
             element = i;
 
             gradp = Gradient(&xp, &xpf, LOGICAL_TRUE, element); // 计算单元压力梯度值
@@ -156,7 +155,6 @@ CorrectFaceUVW() // 修正单元界面面心的速度值
             */
 
             lambda = 0.5;
-
             apj = V_GetCmp(&ap, neighbor + 1) * lambda +
                   V_GetCmp(&ap, element + 1) * (1.0 - lambda); // 插值得到界面上的 ap系数值
 
@@ -209,7 +207,6 @@ CorrectFaceUVW() // 修正单元界面面心的速度值
                 V_SetCmp(&uf, face + 1, (V_GetCmp(&uf, face + 1)
                                          - 1.0 / (apj * (faces[face].dj + faces[face].kj))
                                            * (V_GetCmp(&xpf, face + 1) - ppl)));
-
                 // Wall
                 /*
                 V_SetCmp (&xuf, face + 1, V_GetCmp (&uf,  face + 1) * faces[face].n.x
@@ -232,7 +229,6 @@ CorrectFaceUVW() // 修正单元界面面心的速度值
             {
                 // velocity gradient = 0
                 // specified pressure
-
                 V_SetCmp(&uf, face + 1, V_GetCmp(&uf, face + 1)
                                         - 1.0 / (apj * (faces[face].dj + faces[face].kj))
                                           * (V_GetCmp(&xpf, face + 1) - ppl));
@@ -245,7 +241,6 @@ CorrectFaceUVW() // 修正单元界面面心的速度值
             {
                 // velocity gradient = 0
                 // specified pressure
-
                 V_SetCmp(&uf, face + 1, V_GetCmp(&uf, face + 1)
                                         - 1.0 / (apj * (faces[face].dj + faces[face].kj))
                                           * (V_GetCmp(&xpf, face + 1) - ppl));
@@ -261,7 +256,6 @@ CorrectFaceUVW() // 修正单元界面面心的速度值
                 faces[face].bc == ADIABATICWALL || faces[face].bc == SURFACE) {
                 // pressure gradient = 0
                 // specified velocity
-
                 V_SetCmp(&uf, face + 1, V_GetCmp(&xuf, face + 1)
                                         * faces[face].n.x + V_GetCmp(&xvf, face + 1)
                                                             * faces[face].n.y +
@@ -284,7 +278,7 @@ CorrectFaceUVW() // 修正单元界面面心的速度值
 }
 
 void
-CalculateCorrectionFactors() // 计算速度求解的系数 Hu  Hv Hw —— 近似代表无压力项时的速度分布
+CalculateCorrectionFactors() // 计算下一步的H算子 Hu  Hv Hw
 {
     // BuildMomentumMatrix 函数中已对 Hu 进行初始化 , Hu = Su
     // Hu = Hu - 求和[aN * UN] = -求和[aN * UN] + Su
@@ -293,7 +287,6 @@ CalculateCorrectionFactors() // 计算速度求解的系数 Hu  Hv Hw —— 近
     AddAsgn_VV(&hw, Mul_QV(Sub_QQ(Diag_Q(&Am), &Am), &xw));
     //PrintVector(&xu);
     //PrintVector(&hu);
-
 }
 
 void
@@ -323,14 +316,13 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
     double xsi; // 计算流场变量时，界面的差分因子
 
     msh_vector g; // 体积力
-
     g.x = parameter.g[0]; // 流场体积力(重力加速度)赋值
     g.y = parameter.g[1];
     g.z = parameter.g[2];
 
     // Equation: dU/dt + div(rho*U*U) - div(mi*grad(U)) = qU
 
-    for (i = 0; i < nbelements; i++) // 遍历单元
+    for (i = 0; i < nbelements; i++) // 遍历所有网格单元
     {
         element = i;
 
@@ -341,11 +333,11 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
         app = 0.0; // 离散化方程的系数
         n = 0; // 记录每个单元的非边界界面数
 
-        /*  计算单元速度梯度
+        /* 计算单元速度梯度
            gradup = Gradient (&xu, &xuf, LOGICAL_TRUE, element);
            gradvp = Gradient (&xv, &xvf, LOGICAL_TRUE, element);
            gradwp = Gradient (&xw, &xwf, LOGICAL_TRUE, element);
-         */
+        */
         densp = V_GetCmp(&dens, element + 1); // 单元的密度
 
         for (j = 0; j < elements[element].nbfaces; j++) // 遍历单元界面
@@ -398,32 +390,35 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
                 ani[n] = neighbor; // 存储相邻单元的编号
                 n++; // 统计单元的非边界界面数
 
-                /*  计算非正交修正项，归入源项, 扩散项中界面面心速度梯度grad(Uf) ——产生—— 非正交修正项
-                 * 单元P miu*Af/|df| * dot[grad(Up), rpl - rp]
-                 * 单元N -miu*Af/|df| * dot[grad(Un), rnl - rn]
-
+                /*  计算非正交修正项，归入源项, 扩散项中界面面心速度梯度grad(Uf)—产生—非正交修正项
+                 *  单元P miu*Af/|df| * dot[grad(Up), rpl - rp]
+                 *  单元N -miu*Af/|df| * dot[grad(Un), rnl - rn]
+                 *
                    if (parameter.orthof != 0.0)
                    {
-                   gradun = Gradient (&xu, &xuf, LOGICAL_TRUE, neighbor);
-                   gradvn = Gradient (&xv, &xvf, LOGICAL_TRUE, neighbor);
-                   gradwn = Gradient (&xw, &xwf, LOGICAL_TRUE, neighbor);
+                       gradun = Gradient (&xu, &xuf, LOGICAL_TRUE, neighbor);
+                       gradvn = Gradient (&xv, &xvf, LOGICAL_TRUE, neighbor);
+                       gradwn = Gradient (&xw, &xwf, LOGICAL_TRUE, neighbor);
 
-                   // Non-orthogonal correction terms
-                   bpu += parameter.orthof *
-                       -viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp *
-                   (GeoDotVectorVector (gradun, GeoSubVectorVector (faces[face].rnl, elements[neighbor].celement)) -
-                   GeoDotVectorVector (gradup, GeoSubVectorVector (faces[face].rpl, elements[element].celement)));
+                       // Non-orthogonal correction terms
+                       bpu +=
+                            parameter.orthof *-viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) /
+                       elements[element].Vp *(GeoDotVectorVector (gradun, GeoSubVectorVector (faces[face].rnl,
+                       elements[neighbor].celement)) -GeoDotVectorVector (gradup,
+                       GeoSubVectorVector (faces[face].rpl, elements[element].celement)));
 
-                   bpv += parameter.orthof *
-                       -viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp *
-                   (GeoDotVectorVector (gradvn, GeoSubVectorVector (faces[face].rnl, elements[neighbor].celement)) -
-                   GeoDotVectorVector (gradvp, GeoSubVectorVector (faces[face].rpl, elements[element].celement)));
+                       bpv +=
+                            parameter.orthof *-viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) /
+                       elements[element].Vp *(GeoDotVectorVector (gradvn, GeoSubVectorVector (faces[face].rnl,
+                       elements[neighbor].celement)) -GeoDotVectorVector (gradvp,
+                       GeoSubVectorVector (faces[face].rpl, elements[element].celement)));
 
-                   bpw += parameter.orthof *
-                       -viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp *
-                   (GeoDotVectorVector (gradwn, GeoSubVectorVector (faces[face].rnl, elements[neighbor].celement)) -
-                   GeoDotVectorVector (gradwp, GeoSubVectorVector (faces[face].rpl, elements[element].celement)));
-                   }
+                       bpw +=
+                            parameter.orthof *-viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) /
+                       elements[element].Vp *(GeoDotVectorVector (gradwn, GeoSubVectorVector (faces[face].rnl,
+                       elements[neighbor].celement)) -GeoDotVectorVector (gradwp,
+                       GeoSubVectorVector (faces[face].rpl, elements[element].celement)));
+                    }
                  */
 
             } else // 边界界面
@@ -436,7 +431,8 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
                     if ((faces[face].bc != PERMEABLE || V_GetCmp(&xs, element + 1) > 0.5)
                         && faces[face].bc != SLIP) {
                         // 1/Vp * miuf*Af/|df| , 边界处归入扩散项的部分
-                        app += viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp;
+                        app += viscj * faces[face].Aj / (faces[face].dj + faces[face].kj)
+                               / elements[element].Vp;
 
                         // 1/Vp * miuf*Af/|df|*Uf , 边界处归入源项的部分
                         bpu += viscj * faces[face].Aj / (faces[face].dj + faces[face].kj)
@@ -476,18 +472,22 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
                     }
 
                     // Non-orthogonal correction terms
-                    /*  扩散项中界面面心速度梯度grad(Uf) ——产生—— 非正交修正项  miu*Af/|df| * dot[grad(Up), rpl - rp]
+                    /*  扩散项中界面面心速度梯度grad(Uf)—产生—非正交修正项
+                     *  miu*Af/|df| * dot[grad(Up), rpl - rp]
                        bpu +=
-                       viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp *
-                       GeoDotVectorVector (gradup, GeoSubVectorVector(faces[face].rpl, elements[element].celement));
+                            viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) /
+                       elements[element].Vp *GeoDotVectorVector (gradup, GeoSubVectorVector(faces[face].rpl,
+                       elements[element].celement));
 
                        bpv +=
-                       viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp *
-                       GeoDotVectorVector (gradvp, GeoSubVectorVector(faces[face].rpl, elements[element].celement));
+                            viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) /
+                       elements[element].Vp * GeoDotVectorVector (gradvp, GeoSubVectorVector(faces[face].rpl,
+                       elements[element].celement));
 
                        bpw +=
-                       viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) / elements[element].Vp *
-                       GeoDotVectorVector (gradwp, GeoSubVectorVector(faces[face].rpl, elements[element].celement));
+                            viscj * faces[face].Aj / (faces[face].dj + faces[face].kj) /
+                       elements[element].Vp * GeoDotVectorVector (gradwp, GeoSubVectorVector(faces[face].rpl,
+                       elements[element].celement));
                      */
                 }
             }
@@ -504,33 +504,37 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
         }
 
         // Source - viscous term
-        /*  计算源项中的 黏性应力项 dot[grad(Up),grad(miup)]
+        /* 计算源项中的  黏性应力项  dot[grad(Up),grad(miup)]
            gradvisc = Gradient (&visc, NULL, LOGICAL_FALSE, element);
 
            bpu += GeoDotVectorVector (gradup, gradvisc);
            bpv += GeoDotVectorVector (gradvp, gradvisc);
            bpw += GeoDotVectorVector (gradwp, gradvisc);
-         */
+        */
 
         // Source - gravity  体积力源项 dens * g
         bpu += densp * g.x;
         bpv += densp * g.y;
         bpw += densp * g.z;
 
-        // Initialize H with source contribution without pressure, 使用无压力左右的源项初始化 Hu
-        // 此时 Hu = Su ,在 CalculateCorrectionFactors函数中 进一步完成Hu的计算
-        V_SetCmp(&hu, element + 1, bpu);
-        V_SetCmp(&hv, element + 1, bpv);
-        V_SetCmp(&hw, element + 1, bpw);
+        /* 流固阻力项
+        bpu += viscj / V_GetCmp(&perme, 1);
+        bpv += viscj / V_GetCmp(&perme, 2);
+        bpw += viscj / V_GetCmp(&perme, 3);
 
         // Source - pressure
-        /* 计算源项中的压力梯度项 grad(P)，直接使用Gradient函数计算压力梯度
-        gradp = Gradient (&xp, &xpf, LOGICAL_TRUE, element);
-
+        // 源项中的压力梯度项  grad(P)——使用GradientX函数计算压力梯度
+        gradp = GradientX(&xp, &xpf, LOGICAL_TRUE, element);
         bpu += -gradp.x;
         bpv += -gradp.y;
         bpw += -gradp.z;
         */
+
+        // Initialize H with source contribution without pressure, 使用无压力左右的源项初始化 Hu
+        // 此时 Hu = Su ,在 CalculateCorrectionFactors函数中 进一步完成 Hu的计算
+        V_SetCmp(&hu, element + 1, bpu);
+        V_SetCmp(&hv, element + 1, bpv);
+        V_SetCmp(&hw, element + 1, bpw);
 
         if (app == 0.0 || app != app) // 若 app类型改变 或 取值为 0
         {
@@ -540,6 +544,7 @@ BuildMomentumMatrix(double dt) // 组装离散化动量守恒方程的代数矩�
 
         V_SetCmp(&ap, element + 1, app); // 存储半离散动量方程的参数 amp
         Q_SetLen(&Am, element + 1, n + 1); // Am矩阵每行里系数的数目
+
         // 将单元的app值放入矩阵Am的对角位置
         Q_SetEntry(&Am, element + 1, 0, element + 1, app);
 
@@ -590,6 +595,14 @@ CalculateVelocity(char *var, int *fiter, double dt,   // 求解流场的速度�
     V_Constr(&bv, "Momentum source y-component", nbelements, Normal, True);
     V_Constr(&bw, "Momentum source z-component", nbelements, Normal, True);
 
+    /*  测试语句
+    // 创建渗透率矢量, 并初始化
+    V_Constr(&perme, "Flow field permeability", 3, Normal, True);
+    V_SetCmp(&perme, 1, 1.02e-11);
+    V_SetCmp(&perme, 2, 4.53e-12);
+    V_SetCmp(&perme, 3, 1.25e-12);
+    */
+
     // Store previous time step values  将上一时间步的变量值存储为 U0
     Asgn_VV(&xu0, &xu);
     Asgn_VV(&xv0, &xv);
@@ -631,7 +644,7 @@ CalculateVelocity(char *var, int *fiter, double dt,   // 求解流场的速度�
 
         // 矩阵求解结束的残差大于设定的终止残差 或 求解达到最大迭代次数 , 保证本次迭代求解是有效的
         if ((mres > parameter.mtol[iu] && miter == parameter.miter[iu])
-        || LASResult() != LASOK) // 线性代数运算的结果标志
+            || LASResult() != LASOK) // 线性代数运算的结果标志
         {
             printf("\nError: Problem solving matrix %c\n", var[iu]); // 打印 "矩阵求解出现问题"
             exit(LOGICAL_ERROR); // 程序退出，并返回 LOGICAL_ERROR
@@ -675,16 +688,16 @@ CalculateVelocity(char *var, int *fiter, double dt,   // 求解流场的速度�
                    var[iw], miter, mres, mtime);
 
         if ((mres > parameter.mtol[iw] && miter == parameter.miter[iw])
-        || LASResult() != LASOK) {
+            || LASResult() != LASOK) {
             printf("\nProblem solving matrix %c\n", var[iw]);
             exit(LOGICAL_ERROR);
         }
     }
 
-    // Calculate correction factors  速度场求解完毕后，根据当前速度场变量计算 Hu
+    // Calculate correction factors  速度场求解完毕后，根据当前速度场更新 Hu
     if (parameter.calc[ip] == LOGICAL_TRUE) {
-        // SIMPLE算法中，压力场更新后，进行下一步迭代时 Hu 需要重新计算
-        CalculateCorrectionFactors(&Am, &xu, &xv, &xw, &hu, &hv, &hw);
+        // CalculateCorrectionFactors(&Am, &xu, &xv, &xw, &hu, &hv, &hw);
+        CalculateCorrectionFactors();
     }
 
     Q_Destr(&Am); // 计算完毕，释放迭代计算所创建矩阵、向量

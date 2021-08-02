@@ -101,7 +101,7 @@ WriteMatrix (QMatrix * A, int symmetric) // 将矩阵A 写入文件Matrix.m中
         nj = Q_GetLen (A, i + 1); // 获取矩阵A行的长度
         for (j = 0; j < nj; j++)
         {
-            fprintf (fp, "%d %d  %.16e\n", i + 1, Q_GetPos (A, i + 1, j),
+            fprintf (fp, "%d %zu  %.16e\n", i + 1, Q_GetPos (A, i + 1, j),
                      Q_GetVal (A, i + 1, j)); // 打印 序号、位置、元素值
         }
     }
