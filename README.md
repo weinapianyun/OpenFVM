@@ -1,2 +1,2 @@
 # OpenFVM
-一个基于FVM的CFD小程序
+一个基于FVM的CFD程序
